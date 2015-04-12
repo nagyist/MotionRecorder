@@ -22,7 +22,7 @@ public class RegisterRequestValidatorImpl implements RegisterRequestValidator {
         if(registerRequest.getWeight() <= 0)
             throw new InvalidRegisterRequestException("Pole 'waga' zawiera niepoprawną wartość");
 
-        if(registerRequest.getWeight() <= 0)
+        if(registerRequest.getHeight() <= 0)
             throw new InvalidRegisterRequestException("Pole 'wzrost' zawiera niepoprawną wartość");
     }
 }

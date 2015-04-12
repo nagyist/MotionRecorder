@@ -19,14 +19,6 @@
             android:orientation="vertical">
 
 
-            <TextView
-                android:id="@+id/heading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="@string/register_activity_heading"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
             <EditText
                 android:id="@+id/usernameEditText"
                 android:layout_width="match_parent"
@@ -78,12 +70,21 @@
                 android:hint="@string/weight_placeholder"
                 android:id="@+id/weight" />
 
+            <TextView
+                android:id="@+id/gengerLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp"
+                android:text="@string/gender"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
             <RadioGroup
                 android:id="@+id/genderRadioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal"
                 android:checkedButton="@+id/maleRadioButton">
 
@@ -121,8 +122,6 @@
                 android:calendarViewShown="false"
                 android:datePickerMode="spinner"
                 android:hint="@string/authentication_password_placeholder" />
-
-
 
             <LinearLayout
                 android:orientation="horizontal"

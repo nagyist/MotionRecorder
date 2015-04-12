@@ -2,11 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="put.iwm.android.motionrecorder" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
         <activity
             android:name=".activities.AuthenticationActivity"
             android:label="@string/app_name"
@@ -17,6 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/title_activity_main"
@@ -25,6 +34,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.AuthenticationActivity" />
         </activity>
+
         <activity
             android:name=".activities.RegisterActivity"
             android:label="@string/title_activity_register"
@@ -33,6 +43,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="put.iwm.android.motionrecorder.activities.AuthenticationActivity" />
         </activity>
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyAz1RhjwzdnWNMSuBT9Sk8ooRIdfLMj50o"/>
     </application>
 
 </manifest>

@@ -13,14 +13,11 @@ import put.iwm.android.motionrecorder.R;
 import put.iwm.android.motionrecorder.authentication.AuthenticationService;
 import put.iwm.android.motionrecorder.authentication.AuthenticationServiceImpl;
 import put.iwm.android.motionrecorder.authentication.LoginRequest;
-import put.iwm.android.motionrecorder.authentication.LoginRequestValidator;
-import put.iwm.android.motionrecorder.authentication.LoginRequestValidatorImpl;
+import put.iwm.android.motionrecorder.baseactivities.BaseActivity;
 import put.iwm.android.motionrecorder.exceptions.InvalidLoginRequestException;
-import put.iwm.android.motionrecorder.exceptions.NoSuchUserFoundException;
-import put.iwm.android.motionrecorder.baseactivities.CustomActionBarActivity;
 
 
-public class AuthenticationActivity extends CustomActionBarActivity {
+public class AuthenticationActivity extends BaseActivity {
 
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -28,7 +25,6 @@ public class AuthenticationActivity extends CustomActionBarActivity {
     private Button registerButton;
 
     private AuthenticationService authenticationService = new AuthenticationServiceImpl();
-    private LoginRequestValidator loginRequestValidator = new LoginRequestValidatorImpl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +39,10 @@ public class AuthenticationActivity extends CustomActionBarActivity {
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         loginButton = (Button) findViewById(R.id.loginButton);
         registerButton = (Button) findViewById(R.id.registerButton);
+
+
+
+        getSupportActionBar().show();
 
         setupEventHandlers();
     }
@@ -69,45 +69,31 @@ public class AuthenticationActivity extends CustomActionBarActivity {
 
     private void loginButtonClicked(View v) {
 
-        String username = usernameEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
-
-        LoginRequest loginRequest = new LoginRequest(username, password);
+        LoginRequest loginRequest = constructLoginRequest();
 
         try {
-            validateLoginRequest(loginRequest);
             processLoginRequest(loginRequest);
-        } catch (NoSuchUserFoundException e) {
-            Toast.makeText(AuthenticationActivity.this, getString(R.string.user_not_found, username), Toast.LENGTH_LONG).show();
+            updateSessionData(loginRequest.getUsername());
+            startMainActivity();
+            finish();
         } catch (InvalidLoginRequestException e) {
             Toast.makeText(AuthenticationActivity.this, e.toString(), Toast.LENGTH_LONG).show();
         }
     }
 
-    private void registerButtonClicked(View v) {
+    private LoginRequest constructLoginRequest() {
 
-        startRegisterActivity();
+        String username = usernameEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+
+        LoginRequest loginRequest = new LoginRequest(username, password);
+
+        return loginRequest;
     }
 
-    private void processLoginRequest(LoginRequest loginRequest) {
+    private void processLoginRequest(LoginRequest loginRequest)  throws InvalidLoginRequestException {
 
-        if(checkUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword())) {
-            updateSessionData(loginRequest.getUsername());
-            startMainActivity();
-            finish();
-        } else {
-            Toast.makeText(AuthenticationActivity.this, getString(R.string.wrong_password, loginRequest.getUsername()), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void validateLoginRequest(LoginRequest loginRequest) {
-
-        loginRequestValidator.validate(loginRequest);
-    }
-
-    private boolean checkUsernameAndPassword(String username, String password) {
-
-        return authenticationService.checkUsernameAndPassword(username, password);
+        authenticationService.processLoginRequest(loginRequest);
     }
 
     private void updateSessionData(String username) {
@@ -123,7 +109,6 @@ public class AuthenticationActivity extends CustomActionBarActivity {
         }
     }
 
-
     private void startMainActivity() {
 
         Intent intent = new Intent(this, MainActivity.class);
@@ -132,6 +117,11 @@ public class AuthenticationActivity extends CustomActionBarActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         startActivity(intent);
+    }
+
+    private void registerButtonClicked(View v) {
+
+        startRegisterActivity();
     }
 
     private void startRegisterActivity() {
@@ -157,7 +147,7 @@ public class AuthenticationActivity extends CustomActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.actionSettings) {
             return true;
         }
 

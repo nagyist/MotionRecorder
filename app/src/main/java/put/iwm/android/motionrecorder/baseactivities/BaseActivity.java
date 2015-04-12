@@ -1,5 +1,6 @@
 package put.iwm.android.motionrecorder.baseactivities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -11,7 +12,7 @@ import put.iwm.android.motionrecorder.session.UserSessionManagerImpl;
 /**
  * Created by Szymon on 2015-04-06.
  */
-public abstract class CustomActionBarActivity extends ActionBarActivity {
+public abstract class BaseActivity extends ActionBarActivity {
 
     protected UserSessionManager sessionManager;
 
@@ -39,5 +40,7 @@ public abstract class CustomActionBarActivity extends ActionBarActivity {
         if(!sessionManager.isUserLoggedIn())
             redirectToAuthenticationActivity();
     }
+
+
 
 }

@@ -16,7 +16,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         add("szymie");
     }};
 
-
     private RegisterRequestValidator registerRequestValidator = new RegisterRequestValidatorImpl();
 
     @Override
@@ -26,7 +25,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         //TODO
         usernames.add(registerRequest.getUsername());
-
     }
 
     public void validateRegisterRequest(RegisterRequest registerRequest) throws InvalidRegisterRequestException {
