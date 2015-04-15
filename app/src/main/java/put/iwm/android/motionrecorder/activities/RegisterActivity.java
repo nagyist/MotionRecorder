@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import put.iwm.android.motionrecorder.R;
-import put.iwm.android.motionrecorder.baseactivities.BaseActivity;
+import put.iwm.android.motionrecorder.base.BaseActivity;
 import put.iwm.android.motionrecorder.exceptions.InvalidRegisterRequestException;
 import put.iwm.android.motionrecorder.fragments.RegisterFragment;
 import put.iwm.android.motionrecorder.registration.RegisterRequest;
@@ -74,7 +74,7 @@ public class RegisterActivity extends BaseActivity implements RegisterFragment.O
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.actionSettings) {
+        if (id == R.id.action_settings) {
             return true;
         }
 

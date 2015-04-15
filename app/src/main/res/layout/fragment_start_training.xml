@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:text="Rozpocznij"
-            android:id="@+id/startTrainingButton" />
+            android:id="@+id/start_training_button" />
 
     </LinearLayout>
 

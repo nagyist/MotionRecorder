@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
 
     tools:context="put.iwm.android.motionrecorder.activities.MainActivity">
-    <item android:id="@+id/actionSettings" android:title="@string/action_settings"
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
 
-    <item android:id="@+id/actionLogout" android:title="@string/action_logout"
+    <item android:id="@+id/action_logout" android:title="@string/action_logout"
         android:orderInCategory="110" app:showAsAction="ifRoom|withText" />
 
 </menu>

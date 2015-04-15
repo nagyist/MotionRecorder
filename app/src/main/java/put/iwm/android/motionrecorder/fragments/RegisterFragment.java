@@ -48,14 +48,14 @@ public class RegisterFragment extends Fragment {
 
         super.onActivityCreated(savedInstanceState);
 
-        usernameEditText = (EditText) getView().findViewById(R.id.usernameEditText);
-        passwordEditText  = (EditText) getView().findViewById(R.id.passwordEditText);
-        repeatPasswordEditText = (EditText) getView().findViewById(R.id.passwordRepeatEditText);
+        usernameEditText = (EditText) getView().findViewById(R.id.username_edit_text);
+        passwordEditText  = (EditText) getView().findViewById(R.id.password_edit_text);
+        repeatPasswordEditText = (EditText) getView().findViewById(R.id.password_repeat_edit_text);
         heightEditText = (EditText) getView().findViewById(R.id.height);
         weightEditText = (EditText) getView().findViewById(R.id.weight);
-        maleRadioButton = (RadioButton) getView().findViewById(R.id.maleRadioButton);
-        dateOfBirthPicker = (DatePicker) getView().findViewById(R.id.dateOfBirthPicker);
-        registerButton = (Button) getView().findViewById(R.id.registerRequestButton);
+        maleRadioButton = (RadioButton) getView().findViewById(R.id.male_radio_button);
+        dateOfBirthPicker = (DatePicker) getView().findViewById(R.id.date_of_birth_picker);
+        registerButton = (Button) getView().findViewById(R.id.register_request_button);
 
         setupEventHandlers();
     }

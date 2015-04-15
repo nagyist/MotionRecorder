@@ -3,16 +3,18 @@ package put.iwm.android.motionrecorder.fragments;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 
 import put.iwm.android.motionrecorder.R;
 
 public class RouteMapFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private View view;
 
     public RouteMapFragment() {
         // Required empty public constructor
@@ -22,7 +24,20 @@ public class RouteMapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_route_map, container, false);
+
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null)
+                parent.removeView(view);
+        }
+
+        try {
+            view = inflater.inflate(R.layout.fragment_route_map, container, false);
+        } catch (InflateException e) {
+            /* map is already there, just return view as it is */
+        }
+
+        return view;
     }
 
     /*

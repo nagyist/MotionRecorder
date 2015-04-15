@@ -13,22 +13,14 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/login_activity_heading"
-            android:id="@+id/textView"
-            android:layout_margin="5dp" />
-
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
-            android:id="@+id/usernameEditText"
+            android:id="@+id/username_edit_text"
             android:hint="@string/authentication_username_placeholder"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="15dp"/>
 
         <EditText
@@ -36,9 +28,9 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:ems="10"
-            android:id="@+id/passwordEditText"
+            android:id="@+id/password_edit_text"
             android:hint="@string/authentication_password_placeholder"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="15dp"/>
 
         <LinearLayout
@@ -51,14 +43,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/login_button_text"
-                android:id="@+id/loginButton"
+                android:id="@+id/login_button"
                 android:layout_margin="5dp" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/register_button_text"
-                android:id="@+id/registerButton"
+                android:id="@+id/register_button"
                 android:layout_margin="5dp" />
         </LinearLayout>
 

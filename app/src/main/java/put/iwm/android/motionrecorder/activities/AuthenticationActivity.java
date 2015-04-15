@@ -13,7 +13,7 @@ import put.iwm.android.motionrecorder.R;
 import put.iwm.android.motionrecorder.authentication.AuthenticationService;
 import put.iwm.android.motionrecorder.authentication.AuthenticationServiceImpl;
 import put.iwm.android.motionrecorder.authentication.LoginRequest;
-import put.iwm.android.motionrecorder.baseactivities.BaseActivity;
+import put.iwm.android.motionrecorder.base.BaseActivity;
 import put.iwm.android.motionrecorder.exceptions.InvalidLoginRequestException;
 
 
@@ -35,14 +35,10 @@ public class AuthenticationActivity extends BaseActivity {
 
         setContentView(R.layout.activity_authentication);
 
-        usernameEditText = (EditText) findViewById(R.id.usernameEditText);
-        passwordEditText = (EditText) findViewById(R.id.passwordEditText);
-        loginButton = (Button) findViewById(R.id.loginButton);
-        registerButton = (Button) findViewById(R.id.registerButton);
-
-
-
-        getSupportActionBar().show();
+        usernameEditText = (EditText) findViewById(R.id.username_edit_text);
+        passwordEditText = (EditText) findViewById(R.id.password_edit_text);
+        loginButton = (Button) findViewById(R.id.login_button);
+        registerButton = (Button) findViewById(R.id.register_button);
 
         setupEventHandlers();
     }
@@ -147,7 +143,7 @@ public class AuthenticationActivity extends BaseActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.actionSettings) {
+        if (id == R.id.action_settings) {
             return true;
         }
 
