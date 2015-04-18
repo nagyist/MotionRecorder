@@ -14,10 +14,6 @@ public class StartTrainingFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public StartTrainingFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

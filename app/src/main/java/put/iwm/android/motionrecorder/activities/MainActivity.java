@@ -1,8 +1,8 @@
 package put.iwm.android.motionrecorder.activities;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -12,16 +12,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import put.iwm.android.motionrecorder.R;
+import put.iwm.android.motionrecorder.adapters.NavigationDrawerAdapter;
 import put.iwm.android.motionrecorder.base.BaseActivity;
+import put.iwm.android.motionrecorder.exceptions.FragmentNotFoundException;
 import put.iwm.android.motionrecorder.fragments.RouteMapFragment;
 import put.iwm.android.motionrecorder.fragments.StartTrainingFragment;
 
@@ -31,11 +34,10 @@ public class MainActivity extends BaseActivity {
     private Map<String, Fragment> fragments;
     private List<String> fragmentsTitles;
     private String currentFragmentTitle;
-    private ActionBar actionBar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
-    private ArrayAdapter<String> menuItems;
+    private NavigationDrawerAdapter drawerListAdapter;
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
@@ -48,22 +50,60 @@ public class MainActivity extends BaseActivity {
 
         String targetFragmentTitle = fragmentsTitles.get(position);
 
-        if(targetFragmentTitle != null) {
-            currentFragmentTitle = targetFragmentTitle;
-            Fragment targetFragment = fragments.get(targetFragmentTitle);
-            replaceCurrentFragment(targetFragment);
+        try {
+            switchCurrentFragment(targetFragmentTitle);
+        } catch (FragmentNotFoundException e) {
+            System.err.println(e);
         }
 
-        drawerList.setItemChecked(position, true);
-        setTitle(fragmentsTitles.get(position));
+        drawerListAdapter.setSelectedItemPosition(position);
         drawerLayout.closeDrawer(drawerList);
     }
 
-    private void replaceCurrentFragment(Fragment fragment) {
+    private void switchCurrentFragment(String targetFragmentTitle) throws FragmentNotFoundException {
+
+        if(!fragments.containsKey(targetFragmentTitle))
+            throw new FragmentNotFoundException(String.format("Nie ma fragmentu o tytule '%s'", targetFragmentTitle));
+
+        setCurrentFragmentTitle(targetFragmentTitle);
+        setActionBarTitle(targetFragmentTitle);
+
+        Fragment targetFragment = fragments.get(currentFragmentTitle);
+        replaceCurrentFragment(targetFragment);
+    }
+
+    private void setCurrentFragmentTitle(String currentFragmentTitle) {
+
+        this.currentFragmentTitle = currentFragmentTitle;
+    }
+
+    private void replaceCurrentFragment(Fragment targetFragment) {
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container_frame, fragment);
+        fragmentTransaction.replace(R.id.container_frame, targetFragment);
         fragmentTransaction.commit();
+    }
+
+    private class ActionBarDrawerToggleImpl extends ActionBarDrawerToggle {
+
+        public ActionBarDrawerToggleImpl(Activity activity, DrawerLayout drawerLayout, int openDrawerContentDescRes, int closeDrawerContentDescRes) {
+            super(activity, drawerLayout, openDrawerContentDescRes, closeDrawerContentDescRes);
+        }
+
+        @Override
+        public void onDrawerOpened(View drawerView) {
+            super.onDrawerOpened(drawerView);
+        }
+
+        @Override
+        public void onDrawerClosed(View view) {
+            super.onDrawerClosed(view);
+            setActionBarTitle(currentFragmentTitle);
+        }
+    }
+
+    private void setActionBarTitle(String title) {
+        getActionBar().setTitle(title);
     }
 
     @Override
@@ -75,24 +115,24 @@ public class MainActivity extends BaseActivity {
 
         setContentView(R.layout.activity_main);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerList = (ListView) findViewById(R.id.drawer_list);
-
+        setupViewReferences();
         setupFragments();
         setupDrawerList();
         setupDrawer();
+        setupActionBar();
 
-        actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+        switchCurrentFragment(fragmentsTitles.get(0));
+    }
+
+    private void setupViewReferences() {
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerList = (ListView) findViewById(R.id.drawer_list);
     }
 
     private void setupFragments() {
 
-        fragmentsTitles = new ArrayList<String>() {{
-            add("Trening");
-            add("Trasa");
-        }};
+        fragmentsTitles = Arrays.asList( getResources().getStringArray(R.array.drawer_list_items) );
 
         fragments = new HashMap<String, Fragment>() {{
             put(fragmentsTitles.get(0), new StartTrainingFragment());
@@ -102,9 +142,7 @@ public class MainActivity extends BaseActivity {
 
     private void setupDrawerList() {
 
-        String[] drawerLlistItems = getResources().getStringArray(R.array.drawer_list_items);
-
-        ArrayAdapter<String> drawerListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_selectable_list_item, drawerLlistItems);
+        drawerListAdapter = new NavigationDrawerAdapter(this, R.layout.drawer_list_item, getResources().getStringArray(R.array.drawer_list_items));
 
         drawerList.setAdapter(drawerListAdapter);
     }
@@ -113,27 +151,22 @@ public class MainActivity extends BaseActivity {
 
         drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_list_open, R.string.drawer_list_open) {
-
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                actionBar.setTitle("Navigation!");
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                actionBar.setTitle(currentFragmentTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
+        actionBarDrawerToggle = new ActionBarDrawerToggleImpl(this, drawerLayout, R.string.drawer_list_open, R.string.drawer_list_open);
 
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
+    }
+
+    private void setupActionBar() {
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
+
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         actionBarDrawerToggle.syncState();
@@ -141,6 +174,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+
         super.onConfigurationChanged(newConfig);
         actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
@@ -166,7 +200,7 @@ public class MainActivity extends BaseActivity {
         if(id == R.id.action_logout)
             logout();
 
-        if (actionBarDrawerToggle.onOptionsItemSelected(item))
+        if(actionBarDrawerToggle.onOptionsItemSelected(item))
             return true;
 
         return super.onOptionsItemSelected(item);
@@ -177,4 +211,5 @@ public class MainActivity extends BaseActivity {
         sessionManager.logoutUser();
         redirectToAuthenticationActivity();
     }
+
 }

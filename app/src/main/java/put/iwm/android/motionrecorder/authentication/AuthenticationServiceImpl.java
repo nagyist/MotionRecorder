@@ -35,19 +35,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         loginRequestValidator.validate(loginRequest);
     }
 
-    public boolean isPasswordCorrect(String username, String password) {
+    public boolean isPasswordCorrect(String username, String password) throws InvalidLoginRequestException {
 
         String correctPassword = usernamesAndPasswords.get(username);
 
         if(correctPassword == null)
-            throw new InvalidLoginRequestException(String.format("Użytkownik '%1' nie istnieje", username));
+            throw new InvalidLoginRequestException(String.format("Użytkownik '%s' nie istnieje", username));
 
         if(correctPassword.equals(password))
             return true;
         else
             return false;
     }
-
-
-
 }
