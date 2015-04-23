@@ -1,5 +1,6 @@
 package put.iwm.android.motionrecorder.activities;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -24,17 +25,22 @@ public class RegisterActivity extends BaseActivity implements RegisterFragment.O
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        if (savedInstanceState == null) {
 
-            registerFragment = new RegisterFragment();
-
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, registerFragment)
-                    .commit();
-        }
+        if (savedInstanceState == null)
+            setupFragment();
     }
+    private void setupFragment() {
+
+        registerFragment = new RegisterFragment();
+
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.container, registerFragment);
+        fragmentTransaction.commit();
+    }
+
 
     @Override
     public void onRegisterFragmentInteraction(RegisterRequest registerRequest) {
@@ -81,18 +87,12 @@ public class RegisterActivity extends BaseActivity implements RegisterFragment.O
         return super.onOptionsItemSelected(item);
     }
 
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
     public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
             View rootView = inflater.inflate(R.layout.fragment_register, container, false);
 
             return rootView;

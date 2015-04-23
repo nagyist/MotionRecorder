@@ -2,8 +2,14 @@ package put.iwm.android.motionrecorder.fragments;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,13 +37,21 @@ public class RouteMapFragment extends Fragment {
     private GoogleMap map;
     private MapView mapView;
 
+    private LocationManager locationManager;
+    private String best;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         MapsInitializer.initialize(getActivity());
 
-        setRetainInstance(true);
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setBearingRequired(true);
+        best = locationManager.getBestProvider(criteria, false);
     }
 
     @Override
@@ -54,13 +68,11 @@ public class RouteMapFragment extends Fragment {
                 mapView.onCreate(savedInstanceState);
                 mapView.onResume();
                 // Gets to GoogleMap from the MapView and does initialization stuff
-                if(mapView!=null)
+                if(mapView != null)
                 {
                     map = mapView.getMap();
-                    map.getUiSettings().setMyLocationButtonEnabled(false);
                     map.setMyLocationEnabled(true);
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(43.1, -87.9), 10);
-                    map.animateCamera(cameraUpdate);
+                    map.getUiSettings().setMyLocationButtonEnabled(true);
                 } else {
                     Toast.makeText(getActivity(), "MAPVIEW_NULL", Toast.LENGTH_SHORT).show();
                 }
@@ -74,12 +86,49 @@ public class RouteMapFragment extends Fragment {
             default: Toast.makeText(getActivity(), GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()), Toast.LENGTH_SHORT).show();
         }
 
+
         return view;
     }
 
     @Override
     public void onResume() {
+
         super.onResume();
+
+        Toast.makeText(getActivity(), best, Toast.LENGTH_SHORT).show();
+
+        locationManager.requestLocationUpdates(best, 1000, 0, new LocationListener() {
+
+            @Override
+            public void onLocationChanged(Location location) {
+
+                Toast.makeText(getActivity(), "Lokalizuje!", Toast.LENGTH_SHORT).show();
+
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+
+                LatLng latitudeLongitude = new LatLng(latitude, longitude);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latitudeLongitude, 10);
+
+                map.animateCamera(cameraUpdate);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+
+        }, Looper.myLooper());
     }
 
     @Override

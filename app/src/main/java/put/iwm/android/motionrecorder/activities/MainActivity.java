@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,6 +104,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setActionBarTitle(String title) {
+
         getActionBar().setTitle(title);
     }
 

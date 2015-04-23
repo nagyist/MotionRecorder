@@ -2,6 +2,7 @@ package put.iwm.android.motionrecorder.adapters;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -34,17 +35,12 @@ public class NavigationDrawerAdapter extends ArrayAdapter<String> {
 
         TextView view = (TextView) super.getView(position, convertView, parent);
 
-        view.setTextColor(resources.getColor(R.color.white));
+        view.setTextColor(Color.BLACK);
 
-
-        if (position == selectedItemPosition) {
-            view.setBackgroundColor(resources.getColor(R.color.selected_item_color));
-
-        }
-        else {
-            view.setBackgroundColor(resources.getColor(R.color.white));
-            view.setTextColor(resources.getColor(R.color.selected_item_color));
-        }
+        if(position == selectedItemPosition)
+            view.setBackgroundColor(resources.getColor(R.color.selected_drawer_list_item_color));
+        else
+            view.setBackgroundColor(Color.WHITE);
 
         return view;
     }
