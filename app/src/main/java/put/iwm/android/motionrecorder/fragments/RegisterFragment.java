@@ -48,6 +48,12 @@ public class RegisterFragment extends Fragment {
 
         super.onActivityCreated(savedInstanceState);
 
+        setupUIReferences();
+        setupEventHandlers();
+    }
+
+    private void setupUIReferences() {
+
         usernameEditText = (EditText) getView().findViewById(R.id.username_edit_text);
         passwordEditText  = (EditText) getView().findViewById(R.id.password_edit_text);
         repeatPasswordEditText = (EditText) getView().findViewById(R.id.password_repeat_edit_text);
@@ -56,8 +62,6 @@ public class RegisterFragment extends Fragment {
         maleRadioButton = (RadioButton) getView().findViewById(R.id.male_radio_button);
         dateOfBirthPicker = (DatePicker) getView().findViewById(R.id.date_of_birth_picker);
         registerButton = (Button) getView().findViewById(R.id.register_request_button);
-
-        setupEventHandlers();
     }
 
     private void setupEventHandlers() {
@@ -65,7 +69,6 @@ public class RegisterFragment extends Fragment {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 registerRequestButtonClicked(v);
             }
         });

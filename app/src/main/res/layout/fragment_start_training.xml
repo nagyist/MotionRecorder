@@ -12,8 +12,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:text="Rozpocznij"
+            android:text="@string/start_training_button_text"
             android:id="@+id/start_training_button" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:text="@string/finish_training_button_text"
+            android:id="@+id/finish_training_button"
+            android:visibility="gone" />
+
+
 
     </LinearLayout>
 

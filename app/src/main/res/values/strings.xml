@@ -16,6 +16,9 @@
 
     <string name="login_button_text">Zaloguj się</string>
     <string name="register_button_text">Rejestracja</string>
+    <string name="start_training_button_text">Rozpocznij</string>
+    <string name="finish_training_button_text">Zakończ</string>
+
 
     <string name="login_activity_heading">Logowanie</string>
     <string name="register_activity_heading">Rejestracja</string>

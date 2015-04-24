@@ -35,12 +35,16 @@ public class AuthenticationActivity extends BaseActivity {
 
         setContentView(R.layout.activity_authentication);
 
+        setupUIReferences();
+        setupEventHandlers();
+    }
+
+    private void setupUIReferences() {
+
         usernameEditText = (EditText) findViewById(R.id.username_edit_text);
         passwordEditText = (EditText) findViewById(R.id.password_edit_text);
         loginButton = (Button) findViewById(R.id.login_button);
         registerButton = (Button) findViewById(R.id.register_button);
-
-        setupEventHandlers();
     }
 
     private void setupEventHandlers() {

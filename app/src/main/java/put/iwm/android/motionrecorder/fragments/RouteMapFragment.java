@@ -43,13 +43,12 @@ import put.iwm.android.motionrecorder.services.LocationListenerService;
 
 public class RouteMapFragment extends Fragment  {
 
-    private static final String TAG = LocationListenerService.class.toString();
+    private static final String TAG = RouteMapFragment.class.toString();
     private OnFragmentInteractionListener mListener;
     private View view;
     private GoogleMap map;
     private MapView mapView;
 
-    private Intent locationServiceIntent;
     private BroadcastReceiver locationBroadcastReceiver;
 
     private LocationDatabaseAdapter locationRepository;
@@ -60,8 +59,6 @@ public class RouteMapFragment extends Fragment  {
         super.onCreate(savedInstanceState);
 
         MapsInitializer.initialize(getActivity());
-
-        locationServiceIntent = new Intent(getActivity(), LocationListenerService.class);
 
         locationRepository = new LocationDatabaseAdapter(getActivity());
 
@@ -138,14 +135,12 @@ public class RouteMapFragment extends Fragment  {
     public void onResume() {
 
         super.onResume();
-        getActivity().startService(locationServiceIntent);
     }
 
     @Override
     public void onPause() {
 
         super.onPause();
-        getActivity().stopService(locationServiceIntent);
     }
 
     @Override
