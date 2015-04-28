@@ -86,7 +86,7 @@ public class RouteMapFragment extends Fragment  {
             locationRepository.open();
             LatLng latitudeLongitude = locationRepository.getLastLocation();
             locationRepository.close();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latitudeLongitude, 30);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latitudeLongitude, 12);
             map.animateCamera(cameraUpdate);
         } catch (SQLException e) {
             e.printStackTrace();

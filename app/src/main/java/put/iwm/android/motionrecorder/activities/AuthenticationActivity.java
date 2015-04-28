@@ -10,9 +10,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import put.iwm.android.motionrecorder.R;
+import put.iwm.android.motionrecorder.asynctasks.CheckNetworkAsyncTask;
 import put.iwm.android.motionrecorder.authentication.AuthenticationService;
 import put.iwm.android.motionrecorder.authentication.AuthenticationServiceImpl;
 import put.iwm.android.motionrecorder.authentication.LoginRequest;
+import put.iwm.android.motionrecorder.authentication.LoginResponse;
 import put.iwm.android.motionrecorder.base.BaseActivity;
 import put.iwm.android.motionrecorder.exceptions.InvalidLoginRequestException;
 
@@ -24,10 +26,12 @@ public class AuthenticationActivity extends BaseActivity {
     private Button loginButton;
     private Button registerButton;
 
-    private AuthenticationService authenticationService = new AuthenticationServiceImpl();
+    private AuthenticationService authenticationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        authenticationService = new AuthenticationServiceImpl(this);
 
         super.onCreate(savedInstanceState);
 
@@ -67,12 +71,19 @@ public class AuthenticationActivity extends BaseActivity {
 
     }
 
+    public void processLoginRequestCallback(LoginResponse response) {
+
+        
+
+    }
+
     private void loginButtonClicked(View v) {
 
         LoginRequest loginRequest = constructLoginRequest();
 
         try {
             processLoginRequest(loginRequest);
+
             updateSessionData(loginRequest.getUsername());
             startMainActivity();
             finish();
@@ -90,6 +101,8 @@ public class AuthenticationActivity extends BaseActivity {
 
         return loginRequest;
     }
+
+
 
     private void processLoginRequest(LoginRequest loginRequest)  throws InvalidLoginRequestException {
 

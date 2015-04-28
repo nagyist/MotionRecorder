@@ -1,8 +1,12 @@
 package put.iwm.android.motionrecorder.authentication;
 
+import android.content.Context;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
+import put.iwm.android.motionrecorder.asynctasks.CheckNetworkAsyncTask;
 import put.iwm.android.motionrecorder.exceptions.InvalidLoginRequestException;
 import put.iwm.android.motionrecorder.exceptions.NoSuchUserFoundException;
 
@@ -14,7 +18,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private Map<String, String> usernamesAndPasswords;
     private LoginRequestValidator loginRequestValidator = new LoginRequestValidatorImpl();
 
-    public AuthenticationServiceImpl() {
+    private CheckNetworkAsyncTask checkNetwork;
+    private Context context;
+
+    public AuthenticationServiceImpl(Context context) {
+
+        //TODO
+        this.context = context;
+
         usernamesAndPasswords = new HashMap<String, String>() {{
             put("szymie", "czako");
             put("czako", "pies");
@@ -26,6 +37,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         validateLoginRequest(loginRequest);
 
+        if(!isNetworkAvailable())
+            throw new InvalidLoginRequestException("Nie udało się nawiązać połączenia");
+
         if(!isPasswordCorrect(loginRequest.getUsername(), loginRequest.getPassword()))
             throw new InvalidLoginRequestException("Hasło niepoprawne");
     }
@@ -33,6 +47,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void validateLoginRequest(LoginRequest loginRequest) throws InvalidLoginRequestException {
 
         loginRequestValidator.validate(loginRequest);
+    }
+
+    public boolean isNetworkAvailable() {
+
+       try {
+            checkNetwork = new CheckNetworkAsyncTask(this.context);
+            checkNetwork.execute();
+            return checkNetwork.get();
+       } catch (InterruptedException | ExecutionException e) {
+            return false;
+       }
     }
 
     public boolean isPasswordCorrect(String username, String password) throws InvalidLoginRequestException {
