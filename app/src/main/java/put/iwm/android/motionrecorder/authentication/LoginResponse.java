@@ -1,5 +1,7 @@
 package put.iwm.android.motionrecorder.authentication;
 
+import java.util.Map;
+
 /**
  * Created by Szymon on 2015-04-28.
  */
@@ -13,6 +15,13 @@ public class LoginResponse {
         this.username = username;
         this.loginSuccessful = loginSuccessful;
         this.message = message;
+    }
+
+    public LoginResponse(Map<String, String> map) {
+
+        username = map.get("username");
+        loginSuccessful = Boolean.valueOf(map.get("loginSuccessful"));
+        message = map.get("message");
     }
 
     public String getUsername() {

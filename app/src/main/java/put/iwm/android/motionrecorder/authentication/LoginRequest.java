@@ -1,5 +1,8 @@
 package put.iwm.android.motionrecorder.authentication;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Szymon on 2015-04-06.
  */
@@ -28,6 +31,5 @@ public class LoginRequest {
     public void setPassword(String password) {
         this.password = password;
     }
-
 
 }

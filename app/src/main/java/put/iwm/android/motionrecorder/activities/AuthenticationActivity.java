@@ -10,16 +10,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import put.iwm.android.motionrecorder.R;
-import put.iwm.android.motionrecorder.asynctasks.CheckNetworkAsyncTask;
 import put.iwm.android.motionrecorder.authentication.AuthenticationService;
 import put.iwm.android.motionrecorder.authentication.AuthenticationServiceImpl;
 import put.iwm.android.motionrecorder.authentication.LoginRequest;
 import put.iwm.android.motionrecorder.authentication.LoginResponse;
+import put.iwm.android.motionrecorder.authentication.LoginResponseReceiver;
 import put.iwm.android.motionrecorder.base.BaseActivity;
 import put.iwm.android.motionrecorder.exceptions.InvalidLoginRequestException;
 
 
-public class AuthenticationActivity extends BaseActivity {
+public class AuthenticationActivity extends BaseActivity implements LoginResponseReceiver {
 
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -31,7 +31,7 @@ public class AuthenticationActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        authenticationService = new AuthenticationServiceImpl(this);
+        authenticationService = new AuthenticationServiceImpl(this, this);
 
         super.onCreate(savedInstanceState);
 
@@ -71,22 +71,12 @@ public class AuthenticationActivity extends BaseActivity {
 
     }
 
-    public void processLoginRequestCallback(LoginResponse response) {
-
-        
-
-    }
-
     private void loginButtonClicked(View v) {
 
         LoginRequest loginRequest = constructLoginRequest();
 
         try {
             processLoginRequest(loginRequest);
-
-            updateSessionData(loginRequest.getUsername());
-            startMainActivity();
-            finish();
         } catch (InvalidLoginRequestException e) {
             Toast.makeText(AuthenticationActivity.this, e.toString(), Toast.LENGTH_LONG).show();
         }
@@ -102,11 +92,20 @@ public class AuthenticationActivity extends BaseActivity {
         return loginRequest;
     }
 
-
-
     private void processLoginRequest(LoginRequest loginRequest)  throws InvalidLoginRequestException {
 
         authenticationService.processLoginRequest(loginRequest);
+    }
+
+    public void processLoginResponse(LoginResponse response) {
+
+        if(response.isLoginSuccessful()) {
+            updateSessionData(response.getUsername());
+            startMainActivity();
+            finish();
+        } else {
+            Toast.makeText(AuthenticationActivity.this, response.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void updateSessionData(String username) {

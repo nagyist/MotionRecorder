@@ -4,32 +4,25 @@ import android.content.Context;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
-import put.iwm.android.motionrecorder.asynctasks.CheckNetworkAsyncTask;
+import put.iwm.android.motionrecorder.asynctasks.LoginRequestAsyncTask;
 import put.iwm.android.motionrecorder.exceptions.InvalidLoginRequestException;
-import put.iwm.android.motionrecorder.exceptions.NoSuchUserFoundException;
 
 /**
  * Created by Szymon on 2015-04-04.
  */
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationService, LoginResponseReceiver {
 
-    private Map<String, String> usernamesAndPasswords;
     private LoginRequestValidator loginRequestValidator = new LoginRequestValidatorImpl();
-
-    private CheckNetworkAsyncTask checkNetwork;
+    private LoginResponseReceiver loginResponseReceiver;
+    private LoginRequestAsyncTask loginRequestAsyncTask;
     private Context context;
 
-    public AuthenticationServiceImpl(Context context) {
+    public AuthenticationServiceImpl(Context context, LoginResponseReceiver loginResponseReceiver) {
 
         //TODO
         this.context = context;
-
-        usernamesAndPasswords = new HashMap<String, String>() {{
-            put("szymie", "czako");
-            put("czako", "pies");
-        }};
+        this.loginResponseReceiver = loginResponseReceiver;
     }
 
     @Override
@@ -37,11 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         validateLoginRequest(loginRequest);
 
-        if(!isNetworkAvailable())
-            throw new InvalidLoginRequestException("Nie udało się nawiązać połączenia");
-
-        if(!isPasswordCorrect(loginRequest.getUsername(), loginRequest.getPassword()))
-            throw new InvalidLoginRequestException("Hasło niepoprawne");
+        executeSendLoginRequest(loginRequest);
     }
 
     public void validateLoginRequest(LoginRequest loginRequest) throws InvalidLoginRequestException {
@@ -49,27 +38,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         loginRequestValidator.validate(loginRequest);
     }
 
-    public boolean isNetworkAvailable() {
+    public void executeSendLoginRequest(LoginRequest loginRequest) {
 
-       try {
-            checkNetwork = new CheckNetworkAsyncTask(this.context);
-            checkNetwork.execute();
-            return checkNetwork.get();
-       } catch (InterruptedException | ExecutionException e) {
-            return false;
-       }
+        loginRequestAsyncTask = new LoginRequestAsyncTask(context, this);
+        loginRequestAsyncTask.execute(loginRequest);
     }
 
-    public boolean isPasswordCorrect(String username, String password) throws InvalidLoginRequestException {
+    @Override
+    public void processLoginResponse(LoginResponse response) {
+        loginResponseReceiver.processLoginResponse(response);
+    }
 
-        String correctPassword = usernamesAndPasswords.get(username);
-
-        if(correctPassword == null)
-            throw new InvalidLoginRequestException(String.format("Użytkownik '%s' nie istnieje", username));
-
-        if(correctPassword.equals(password))
-            return true;
-        else
-            return false;
+    @Override
+    public void setLoginResponseReceiver(LoginResponseReceiver loginResponseReceiver) {
+        this.loginResponseReceiver = loginResponseReceiver;
     }
 }

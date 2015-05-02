@@ -15,12 +15,14 @@ import put.iwm.android.motionrecorder.base.BaseActivity;
 import put.iwm.android.motionrecorder.exceptions.InvalidRegisterRequestException;
 import put.iwm.android.motionrecorder.fragments.RegisterFragment;
 import put.iwm.android.motionrecorder.registration.RegisterRequest;
+import put.iwm.android.motionrecorder.registration.RegisterResponse;
+import put.iwm.android.motionrecorder.registration.RegisterResponseReceiver;
 import put.iwm.android.motionrecorder.registration.RegistrationService;
 import put.iwm.android.motionrecorder.registration.RegistrationServiceImpl;
 
-public class RegisterActivity extends BaseActivity implements RegisterFragment.OnRegisterFragmentInteractionListener {
+public class RegisterActivity extends BaseActivity implements RegisterFragment.OnRegisterFragmentInteractionListener, RegisterResponseReceiver {
 
-    private RegistrationService registrationService = new RegistrationServiceImpl();
+    private RegistrationService registrationService = new RegistrationServiceImpl(this, this);
     private Fragment registerFragment;
 
     @Override
@@ -45,24 +47,32 @@ public class RegisterActivity extends BaseActivity implements RegisterFragment.O
     @Override
     public void onRegisterFragmentInteraction(RegisterRequest registerRequest) {
 
-        receiveRegisterRequest(registerRequest);
+        processRegisterRequest(registerRequest);
     }
 
-    private void receiveRegisterRequest(RegisterRequest registerRequest) {
+    private void processRegisterRequest(RegisterRequest registerRequest) {
 
         try {
-            processRegisterRequest(registerRequest);
-            redirectToAuthenticationActivity();
-            Toast.makeText(RegisterActivity.this, R.string.register_request_success, Toast.LENGTH_LONG).show();
-            finish();
+            tryProcessRegisterRequest(registerRequest);
         } catch (InvalidRegisterRequestException e) {
             Toast.makeText(RegisterActivity.this, e.toString(), Toast.LENGTH_LONG).show();
         }
     }
 
-    private void processRegisterRequest(RegisterRequest registerRequest) throws InvalidRegisterRequestException {
+    private void tryProcessRegisterRequest(RegisterRequest registerRequest) throws InvalidRegisterRequestException {
 
         registrationService.processRegisterRequest(registerRequest);
+    }
+
+    @Override
+    public void processRegisterResponse(RegisterResponse response) {
+
+        Toast.makeText(RegisterActivity.this, response.getMessage(), Toast.LENGTH_LONG).show();
+
+        if(response.isRegisterSuccessful()) {
+            redirectToAuthenticationActivity();
+            finish();
+        }
     }
 
     @Override

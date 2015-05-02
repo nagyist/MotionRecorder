@@ -8,4 +8,5 @@ import put.iwm.android.motionrecorder.exceptions.InvalidLoginRequestException;
 public interface AuthenticationService {
 
     public void processLoginRequest(LoginRequest loginRequest) throws InvalidLoginRequestException;
+    public void setLoginResponseReceiver(LoginResponseReceiver loginResponseReceiver);
 }
