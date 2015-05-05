@@ -1,21 +1,14 @@
 package put.iwm.android.motionrecorder.fragments;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,19 +16,18 @@ import android.app.Fragment;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import put.iwm.android.motionrecorder.R;
 import put.iwm.android.motionrecorder.database.LocationDatabaseAdapter;
@@ -70,7 +62,9 @@ public class RouteMapFragment extends Fragment  {
         locationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                locationUpdateReceived(intent);
+
+                Log.i(TAG, "Otrzymano powiadomienie od usługi.");
+                processLocationUpdate();
             }
         };
 
@@ -78,19 +72,41 @@ public class RouteMapFragment extends Fragment  {
         getActivity().registerReceiver(locationBroadcastReceiver, intentFilter);
     }
 
-    private void locationUpdateReceived(Intent intent) {
-
-        Log.i(TAG, "Otrzymano powiadomienie od usługi.");
+    private void processLocationUpdate() {
 
         try {
-            locationRepository.open();
-            LatLng latitudeLongitude = locationRepository.getLastLocation();
-            locationRepository.close();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latitudeLongitude, 12);
-            map.animateCamera(cameraUpdate);
+            tryProcessLocationUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void tryProcessLocationUpdate() throws SQLException {
+
+        locationRepository.open();
+        LatLng lastLocation = locationRepository.getLastLocation();
+        List<LatLng> lastLocations = locationRepository.getLastLocations(2);
+        locationRepository.close();
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lastLocation, 15.2f);
+        map.animateCamera(cameraUpdate);
+
+        map.addMarker(new MarkerOptions().position(lastLocation));
+
+        PolylineOptions polyline = new PolylineOptions();
+
+        polyline.addAll(lastLocations);
+
+        //polyline.add(new LatLng(52.2287325,16.8436169));
+        //polyline.add(new LatLng(52.2292796,16.8446053));
+        //polyline.add(new LatLng(52.2300684,16.8465237));
+        //polyline.add(new LatLng(52.2280506,16.8474071));
+
+        polyline.width(4.2f);
+        polyline.color(Color.rgb(0x42, 0x85, 0xF2));
+        polyline.geodesic(true);
+
+        map.addPolyline(polyline);
     }
 
     @Override
@@ -114,6 +130,7 @@ public class RouteMapFragment extends Fragment  {
                 if(mapView != null) {
                     map = mapView.getMap();
                     map.setMyLocationEnabled(true);
+                    map.getUiSettings().setMapToolbarEnabled(false);
                     map.getUiSettings().setMyLocationButtonEnabled(true);
                 } else {
                     Toast.makeText(getActivity(), "MAPVIEW_NULL", Toast.LENGTH_SHORT).show();

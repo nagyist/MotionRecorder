@@ -9,6 +9,9 @@ import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Szymon on 2015-04-23.
@@ -69,6 +72,28 @@ public class LocationDatabaseAdapter {
         cursor.close();
 
         return new LatLng(latitude, longitude);
+    }
+
+    public List<LatLng> getLastLocations(int limit) {
+
+        Cursor cursor = database.query(LocationDatabaseHelper.TABLE_NAME,
+                new String[] { ROWID_COLUMN, LATITUDE_COLUMN, LONGITUDE_COLUMN },
+                null, null, null, null, "_id DESC", "2");
+
+        List<LatLng> result = new LinkedList<>();
+
+        cursor.moveToFirst();
+
+        do {
+            double latitude = cursor.getDouble(1);
+            double longitude = cursor.getDouble(2);
+
+            result.add(new LatLng(latitude, longitude));
+        } while(cursor.moveToNext());
+
+        cursor.close();
+
+        return result;
     }
 
 }

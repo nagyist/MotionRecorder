@@ -48,8 +48,6 @@ public class HttpJsonRequestHandler implements LoginRequestHandler, RegisterRequ
         loginAddress = "https://motion-recorder-server.herokuapp.com/login";
         registerAddress = "https://motion-recorder-server.herokuapp.com//register";
         httpClient = new DefaultHttpClient();
-        httpPost.setHeader("Accept", "application/json");
-        httpPost.setHeader("Content-type", "application/json");
     }
 
     public LoginResponse performLoginRequest(LoginRequest request) {
@@ -100,6 +98,8 @@ public class HttpJsonRequestHandler implements LoginRequestHandler, RegisterRequ
         entity.setContentEncoding(HTTP.UTF_8);
 
         httpPost.setEntity(entity);
+        httpPost.setHeader("Accept", "application/json");
+        httpPost.setHeader("Content-type", "application/json");
 
         HttpResponse httpResponse = httpClient.execute(httpPost);
         JSONObject jsonResponse = buildJsonFromHttpResponse(httpResponse);

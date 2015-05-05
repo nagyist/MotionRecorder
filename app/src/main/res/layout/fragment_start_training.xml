@@ -8,21 +8,46 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
+        <TextView
+            android:id="@+id/training_timer"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:textSize="40sp"
+            android:textColor="#000000"
+            android:text="@string/timer_init_value"
+            android:gravity="center_horizontal" />
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_margin="5dp"
             android:text="@string/start_training_button_text"
             android:id="@+id/start_training_button" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_margin="5dp"
             android:text="@string/finish_training_button_text"
             android:id="@+id/finish_training_button"
             android:visibility="gone" />
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/resume_training_button_text"
+            android:id="@+id/resume_training_button"
+            android:visibility="visible" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/pause_training_button_text"
+            android:id="@+id/pause_training_button"
+            android:visibility="visible" />
 
 
     </LinearLayout>

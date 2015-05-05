@@ -23,20 +23,16 @@ android {
         }
     }
 
-    buildTypes {
-
-        release {
-            resValue "string", "google_maps_api_key", "AIzaSyAz1RhjwzdnWNMSuBT9Sk8ooRIdfLMj50o"
-        }
-    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.google.guava:guava:15.0'
+    compile 'org.apache.commons:commons-lang3:3.0'
 
-    compile 'com.squareup.dagger:dagger:1.2.1'
-    apt 'com.squareup.dagger:dagger-compiler:1.2.1'
+    compile 'com.google.dagger:dagger:2.1-SNAPSHOT'
+    apt 'com.google.dagger:dagger-compiler:2.1-SNAPSHOT'
     provided 'org.glassfish:javax.annotation:10.0-b28'
     compile 'com.google.android.gms:play-services:7.0.0'
 }

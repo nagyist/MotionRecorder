@@ -3,6 +3,7 @@ package put.iwm.android.motionrecorder.activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -124,6 +125,16 @@ public class MainActivity extends BaseActivity {
         setupActionBar();
 
         switchCurrentFragment(fragmentsTitles.get(0));
+
+        //restoreState(savedInstanceState);
+    }
+
+    private void restoreState(Bundle savedState) {
+
+        if (savedState != null) {
+            FragmentManager fragmentManager = getFragmentManager();
+            fragments.put(currentFragmentTitle, fragmentManager.getFragment(savedState, currentFragmentTitle));
+        }
     }
 
     private void setupViewReferences() {
@@ -166,6 +177,15 @@ public class MainActivity extends BaseActivity {
         getActionBar().setHomeButtonEnabled(true);
     }
 
+    /*@Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        super.onSaveInstanceState(outState);
+
+        Fragment currentFragment = fragments.get(currentFragmentTitle);
+        getFragmentManager().putFragment(outState, currentFragmentTitle, currentFragment);
+    }*/
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
 
@@ -186,6 +206,11 @@ public class MainActivity extends BaseActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

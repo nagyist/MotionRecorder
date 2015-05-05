@@ -1,11 +1,15 @@
 package put.iwm.android.motionrecorder.services;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+
+//import android.location.LocationListener;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -23,9 +27,13 @@ public class LocationListenerService extends Service implements LocationListener
 
     public static final String ACTION = "put.iwm.android.motionrecorder.services.LOCATION_UPDATE";
     private static final String TAG = LocationListenerService.class.toString();
+    private static final long updateTime = 1000;
+    private static final float updateDistance = 0;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private LocationDatabaseAdapter locationRepository;
+
+    private LocationManager locationManager;
 
     @Override
     public void onCreate() {
@@ -49,6 +57,9 @@ public class LocationListenerService extends Service implements LocationListener
         createGoogleApiClient();
         createLocationRequest();
         connectGoogleApiClient();
+
+        //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, updateTime, updateDistance, this);
     }
 
     private synchronized void createGoogleApiClient() {
@@ -62,8 +73,8 @@ public class LocationListenerService extends Service implements LocationListener
     private void createLocationRequest() {
 
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(1000);
+        locationRequest.setInterval(updateTime);
+        locationRequest.setFastestInterval(updateTime);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -87,30 +98,51 @@ public class LocationListenerService extends Service implements LocationListener
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
     }
 
-
     @Override
     public void onLocationChanged(Location location) {
 
+        processLocationUpdate(location);
+    }
+
+    private void processLocationUpdate(Location location) {
+
         try {
-            locationRepository.open();
-            locationRepository.addLocation(location);
-            locationRepository.close();
+            tryProcessLocationUpdate(location);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void tryProcessLocationUpdate(Location location) throws SQLException {
+
+        locationRepository.open();
+        locationRepository.addLocation(location);
+        locationRepository.close();
 
         Intent intent = new Intent(ACTION);
-        //intent.putExtra("lat", location.getLatitude());
-        //intent.putExtra("lng", location.getLongitude());
-
         sendBroadcast(intent);
 
         Log.i(TAG, "Wysłano powiadomienie do mapy!");
     }
 
+    //@Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.i(TAG, "onStatusChanged!");
+    }
+
+    //@Override
+    public void onProviderEnabled(String provider) {
+        Log.i(TAG, "onProviderEnabled!");
+    }
+
+    //@Override
+    public void onProviderDisabled(String provider) {
+        Log.i(TAG, "onProviderDisabled!");
+    }
+
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.i(TAG, "onConnectionSuspended!");
     }
 
     @Override
@@ -118,6 +150,10 @@ public class LocationListenerService extends Service implements LocationListener
 
         super.onDestroy();
         LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+        //locationManager.removeUpdates(this);
+        stopSelf();
+
+        Log.i(TAG, "onDestroy!");
     }
 
     @Override
