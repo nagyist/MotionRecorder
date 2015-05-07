@@ -45,6 +45,13 @@
     <string name="drawer_list_open">Otwórz menu</string>
     <string name="drawer_list_close">Zamknij menu</string>
 
+    <string name="timer_label">Czas</string>
     <string name="timer_init_value">00:00:00</string>
+
+    <string name="distance_label">Dystans\nkm</string>
+    <string name="distance_init_value">00.0</string>
+
+    <string name="speed_label">Prędkość\nkm/h</string>
+    <string name="speed_init_value">00</string>
 
 </resources>

@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.app.Fragment;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -23,7 +22,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.sql.SQLException;
@@ -84,27 +82,24 @@ public class RouteMapFragment extends Fragment  {
     private void tryProcessLocationUpdate() throws SQLException {
 
         locationRepository.open();
-        LatLng lastLocation = locationRepository.getLastLocation();
         List<LatLng> lastLocations = locationRepository.getLastLocations(2);
         locationRepository.close();
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lastLocation, 15.2f);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lastLocations.get(0), 18.2f);
         map.animateCamera(cameraUpdate);
 
-        map.addMarker(new MarkerOptions().position(lastLocation));
+        //map.addMarker(new MarkerOptions().position(lastLocations.get(0)));
 
         PolylineOptions polyline = new PolylineOptions();
-
         polyline.addAll(lastLocations);
+        polyline.width(4.2f);
+        polyline.color(Color.rgb(0x42, 0x85, 0xF2));
+        polyline.geodesic(true);
 
         //polyline.add(new LatLng(52.2287325,16.8436169));
         //polyline.add(new LatLng(52.2292796,16.8446053));
         //polyline.add(new LatLng(52.2300684,16.8465237));
         //polyline.add(new LatLng(52.2280506,16.8474071));
-
-        polyline.width(4.2f);
-        polyline.color(Color.rgb(0x42, 0x85, 0xF2));
-        polyline.geodesic(true);
 
         map.addPolyline(polyline);
     }
@@ -115,38 +110,36 @@ public class RouteMapFragment extends Fragment  {
 
         view = inflater.inflate(R.layout.fragment_route_map, container, false);
 
-        setupMap(savedInstanceState);
+        setupMapView(savedInstanceState);
 
         return view;
     }
 
-    private void setupMap(Bundle savedInstanceState) {
+    private void setupMapView(Bundle savedInstanceState) {
 
-        switch (GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity())) {
-            case ConnectionResult.SUCCESS:
-                mapView = (MapView) view.findViewById(R.id.map);
-                mapView.onCreate(savedInstanceState);
-                mapView.onResume();
-                if(mapView != null) {
-                    map = mapView.getMap();
-                    map.setMyLocationEnabled(true);
-                    map.getUiSettings().setMapToolbarEnabled(false);
-                    map.getUiSettings().setMyLocationButtonEnabled(true);
-                } else {
-                    Toast.makeText(getActivity(), "MAPVIEW_NULL", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case ConnectionResult.SERVICE_MISSING:
-                Toast.makeText(getActivity(), "SERVICE MISSING", Toast.LENGTH_SHORT).show();
-                break;
-            case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
-                Toast.makeText(getActivity(), "UPDATE REQUIRED", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                Toast.makeText(getActivity(), GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()), Toast.LENGTH_SHORT).show();
-                break;
+        if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()) == ConnectionResult.SUCCESS) {
+
+            mapView = (MapView) view.findViewById(R.id.map);
+            mapView.onCreate(savedInstanceState);
+            mapView.onResume();
+
+            if(mapView != null)
+                setupMap();
+            else
+                Log.i(TAG, "MAPVIEW_NULL");
         }
+
+        Log.i(TAG, String.valueOf(GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity())));
     }
+
+    private void setupMap() {
+
+        map = mapView.getMap();
+        map.setMyLocationEnabled(true);
+        map.getUiSettings().setMapToolbarEnabled(false);
+        map.getUiSettings().setMyLocationButtonEnabled(true);
+    }
+
 
     @Override
     public void onResume() {

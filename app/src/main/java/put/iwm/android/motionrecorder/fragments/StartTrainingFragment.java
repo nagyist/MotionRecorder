@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import javax.inject.Inject;
+
 import put.iwm.android.motionrecorder.R;
 import put.iwm.android.motionrecorder.application.MotionRecorderApplication;
 import put.iwm.android.motionrecorder.training.TimerListener;
@@ -34,11 +36,16 @@ public class StartTrainingFragment extends Fragment implements TimerListener {
     private Intent locationServiceIntent;
     private TrainingManager trainingManager;
 
+    @Inject
+    TimerTextGenerator timerTextGenerator;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Log.i(TAG, "Tworzymy fragment");
+
+        MotionRecorderApplication.component().inject(this);
 
         rootView = inflater.inflate(R.layout.fragment_start_training, container, false);
         locationServiceIntent = new Intent(getActivity(), LocationListenerService.class);
@@ -53,6 +60,8 @@ public class StartTrainingFragment extends Fragment implements TimerListener {
         updateUI();
 
         processTimerUpdate(trainingTimer.getDurationTime());
+
+
 
         return rootView;
     }
@@ -78,9 +87,7 @@ public class StartTrainingFragment extends Fragment implements TimerListener {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "Rozpoczęto trening!");
-                getActivity().startService(locationServiceIntent);
-                trainingManager.startTraining();
-                updateUI();
+                startTrainingButtonClicked();
             }
         });
 
@@ -88,9 +95,7 @@ public class StartTrainingFragment extends Fragment implements TimerListener {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "Zakończono trening!");
-                getActivity().stopService(locationServiceIntent);
-                trainingManager.finishTraining();
-                updateUI();
+                finishTrainingButton();
             }
         });
 
@@ -98,9 +103,7 @@ public class StartTrainingFragment extends Fragment implements TimerListener {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "Wznowiono trening!");
-                getActivity().startService(locationServiceIntent);
-                trainingManager.resumeTraining();
-                updateUI();
+                resumeTrainingButtonClicked();
             }
         });
 
@@ -108,11 +111,37 @@ public class StartTrainingFragment extends Fragment implements TimerListener {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "Wstrzymano trening!");
-                getActivity().stopService(locationServiceIntent);
-                trainingManager.pauseTraining();
-                updateUI();
+                pauseTrainingButtonClicked();
             }
         });
+    }
+
+    private void startTrainingButtonClicked() {
+
+        getActivity().startService(locationServiceIntent);
+        trainingManager.startTraining();
+        updateUI();
+    }
+
+    private void finishTrainingButton() {
+
+        getActivity().stopService(locationServiceIntent);
+        trainingManager.finishTraining();
+        updateUI();
+    }
+
+    private void resumeTrainingButtonClicked() {
+
+        getActivity().startService(locationServiceIntent);
+        trainingManager.resumeTraining();
+        updateUI();
+    }
+
+    private void pauseTrainingButtonClicked() {
+
+        getActivity().stopService(locationServiceIntent);
+        trainingManager.pauseTraining();
+        updateUI();
     }
 
     private void updateUI() {
@@ -140,29 +169,8 @@ public class StartTrainingFragment extends Fragment implements TimerListener {
     @Override
     public void processTimerUpdate(long time) {
 
-        long hours = extractHours(time);
-        long minutes = extractMinutes(time);
-        long seconds = extractSeconds(time);
-
-        String timeString = String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
-
-        trainingTimerTextView.setText(timeString);
-    }
-
-    private long extractHours(long time) {
-        return time / 1000 / 60 % 60;
-    }
-
-    private long extractMinutes(long time) {
-        return time / 1000 / 60;
-    }
-
-    private long extractSeconds(long time) {
-        return (time / 1000) % 60;
-    }
-
-    private long extractMilliseconds(long time) {
-        return time % 1000;
+        String timeText = timerTextGenerator.createTimerText(time);
+        trainingTimerTextView.setText(timeText);
     }
 
     @Override

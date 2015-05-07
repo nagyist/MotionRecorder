@@ -3,53 +3,121 @@
     android:layout_height="match_parent"
     tools:context="put.iwm.android.motionrecorder.fragments.StartTrainingFragment">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/training_timer"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:textSize="40sp"
-            android:textColor="#000000"
-            android:text="@string/timer_init_value"
-            android:gravity="center_horizontal" />
+            android:layout_height="fill_parent">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="@string/start_training_button_text"
-            android:id="@+id/start_training_button" />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:orientation="horizontal">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="@string/finish_training_button_text"
-            android:id="@+id/finish_training_button"
-            android:visibility="gone" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/timer_label"
+                    android:layout_alignParentLeft="true" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="@string/resume_training_button_text"
-            android:id="@+id/resume_training_button"
-            android:visibility="visible" />
+                <TextView
+                    android:id="@+id/training_timer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="40sp"
+                    android:textColor="#000000"
+                    android:text="@string/timer_init_value"
+                    android:layout_alignParentRight="true" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="@string/pause_training_button_text"
-            android:id="@+id/pause_training_button"
-            android:visibility="visible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/distance_label"
+                    android:layout_alignParentLeft="true" />
+
+                <TextView
+                    android:id="@+id/training_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="40sp"
+                    android:textColor="#000000"
+                    android:text="@string/distance_init_value"
+                    android:layout_alignParentRight="true" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/speed_label"
+                    android:layout_alignParentLeft="true" />
+
+                <TextView
+                    android:id="@+id/training_speed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="40sp"
+                    android:textColor="#000000"
+                    android:text="@string/speed_init_value"
+                    android:layout_alignParentRight="true" />
+
+            </RelativeLayout>
 
 
-    </LinearLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/start_training_button_text"
+                android:id="@+id/start_training_button" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/finish_training_button_text"
+                android:id="@+id/finish_training_button"
+                android:visibility="gone" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/resume_training_button_text"
+                android:id="@+id/resume_training_button"
+                android:visibility="visible" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@string/pause_training_button_text"
+                android:id="@+id/pause_training_button"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </FrameLayout>
