@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import javax.inject.Inject;
+
 import put.iwm.android.motionrecorder.R;
 import put.iwm.android.motionrecorder.base.BaseActivity;
 import put.iwm.android.motionrecorder.exceptions.InvalidRegisterRequestException;
@@ -22,14 +24,20 @@ import put.iwm.android.motionrecorder.registration.RegistrationServiceImpl;
 
 public class RegisterActivity extends BaseActivity implements RegisterFragment.OnRegisterFragmentInteractionListener, RegisterResponseReceiver {
 
-    private RegistrationService registrationService = new RegistrationServiceImpl(this, this);
+    @Inject
+    RegistrationService registrationService;
     private Fragment registerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        getActivityComponent().inject(this);
+
         setContentView(R.layout.activity_register);
+
+        registrationService.setRegisterResponseReceiver(this);
 
         if (savedInstanceState == null)
             setupFragment();

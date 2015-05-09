@@ -23,6 +23,12 @@ public class LoginRequestAsyncTask extends AsyncTask<LoginRequest, Boolean, Logi
     private ProgressDialog progressDialog;
     private Context context;
 
+    public LoginRequestAsyncTask(Context context) {
+        this.context = context;
+        networkConnection = new NetworkConnectionImpl(context);
+        loginRequestHandler = new HttpJsonRequestHandler();
+    }
+
     public LoginRequestAsyncTask(Context context, LoginResponseReceiver loginResponseReceiver) {
         this.loginResponseReceiver = loginResponseReceiver;
         this.context = context;
@@ -80,5 +86,9 @@ public class LoginRequestAsyncTask extends AsyncTask<LoginRequest, Boolean, Logi
 
     public void setLoginResponseReceiver(LoginResponseReceiver loginResponseReceiver) {
         this.loginResponseReceiver = loginResponseReceiver;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 }

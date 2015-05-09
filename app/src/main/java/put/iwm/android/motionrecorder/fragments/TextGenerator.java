@@ -1,9 +1,11 @@
 package put.iwm.android.motionrecorder.fragments;
 
+import java.util.Locale;
+
 /**
  * Created by Szymon on 2015-05-06.
  */
-public class TimerTextGenerator {
+public class TextGenerator {
 
     public String createTimerText(long time) {
 
@@ -30,6 +32,16 @@ public class TimerTextGenerator {
 
     private long extractMilliseconds(long time) {
         return time % 1000;
+    }
+
+    public String createDistanceText(float distance) {
+        String distanceText = String.format(Locale.ENGLISH, "%.2f", distance);
+        return distanceText;
+    }
+
+    public String createSpeedText(float speed) {
+        String speedText = String.format(Locale.ENGLISH, "%.2f", speed);
+        return speedText;
     }
 
 }

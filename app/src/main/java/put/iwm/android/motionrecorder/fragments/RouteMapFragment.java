@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,10 +26,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 import put.iwm.android.motionrecorder.R;
 import put.iwm.android.motionrecorder.database.LocationDatabaseAdapter;
+import put.iwm.android.motionrecorder.database.models.RoutePoint;
 import put.iwm.android.motionrecorder.services.LocationListenerService;
 
 public class RouteMapFragment extends Fragment  {
@@ -82,24 +85,22 @@ public class RouteMapFragment extends Fragment  {
     private void tryProcessLocationUpdate() throws SQLException {
 
         locationRepository.open();
-        List<LatLng> lastLocations = locationRepository.getLastLocations(2);
+        List<RoutePoint> lastLocations = locationRepository.getLastLocations(2);
         locationRepository.close();
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lastLocations.get(0), 18.2f);
+        List<LatLng> coordinates = new LinkedList<>();
+        for(RoutePoint location : lastLocations) {
+            coordinates.add(new LatLng(location.getLatitude(), location.getLongitude()));
+        }
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coordinates.get(0), 16.2f);
         map.animateCamera(cameraUpdate);
 
-        //map.addMarker(new MarkerOptions().position(lastLocations.get(0)));
-
         PolylineOptions polyline = new PolylineOptions();
-        polyline.addAll(lastLocations);
+        polyline.addAll(coordinates);
         polyline.width(4.2f);
         polyline.color(Color.rgb(0x42, 0x85, 0xF2));
         polyline.geodesic(true);
-
-        //polyline.add(new LatLng(52.2287325,16.8436169));
-        //polyline.add(new LatLng(52.2292796,16.8446053));
-        //polyline.add(new LatLng(52.2300684,16.8465237));
-        //polyline.add(new LatLng(52.2280506,16.8474071));
 
         map.addPolyline(polyline);
     }
@@ -139,7 +140,6 @@ public class RouteMapFragment extends Fragment  {
         map.getUiSettings().setMapToolbarEnabled(false);
         map.getUiSettings().setMyLocationButtonEnabled(true);
     }
-
 
     @Override
     public void onResume() {

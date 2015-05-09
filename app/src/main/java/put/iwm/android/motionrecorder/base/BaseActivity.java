@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import put.iwm.android.motionrecorder.activities.AuthenticationActivity;
+import put.iwm.android.motionrecorder.di.ActivityComponent;
+import put.iwm.android.motionrecorder.di.ActivityModule;
+import put.iwm.android.motionrecorder.di.DaggerActivityComponent;
 import put.iwm.android.motionrecorder.session.UserSessionManager;
 import put.iwm.android.motionrecorder.session.UserSessionManagerImpl;
 
@@ -14,13 +17,20 @@ import put.iwm.android.motionrecorder.session.UserSessionManagerImpl;
 public abstract class BaseActivity extends Activity {
 
     protected UserSessionManager sessionManager;
+    protected ActivityComponent activityComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
+        setupInjector();
+
         sessionManager = new UserSessionManagerImpl(getApplicationContext());
+    }
+
+    private void setupInjector() {
+        activityComponent = ActivityComponent.Initializer.init(this);
     }
 
     protected void redirectToAuthenticationActivity() {
@@ -40,6 +50,7 @@ public abstract class BaseActivity extends Activity {
             redirectToAuthenticationActivity();
     }
 
-
-
+    protected ActivityComponent getActivityComponent() {
+        return activityComponent;
+    }
 }

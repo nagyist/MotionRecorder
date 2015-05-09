@@ -9,9 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import javax.inject.Inject;
+
 import put.iwm.android.motionrecorder.R;
+import put.iwm.android.motionrecorder.application.MotionRecorderApplication;
 import put.iwm.android.motionrecorder.authentication.AuthenticationService;
-import put.iwm.android.motionrecorder.authentication.AuthenticationServiceImpl;
 import put.iwm.android.motionrecorder.authentication.LoginRequest;
 import put.iwm.android.motionrecorder.authentication.LoginResponse;
 import put.iwm.android.motionrecorder.authentication.LoginResponseReceiver;
@@ -25,19 +27,21 @@ public class AuthenticationActivity extends BaseActivity implements LoginRespons
     private EditText passwordEditText;
     private Button loginButton;
     private Button registerButton;
-
-    private AuthenticationService authenticationService;
+    @Inject
+    AuthenticationService authenticationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        authenticationService = new AuthenticationServiceImpl(this, this);
-
         super.onCreate(savedInstanceState);
+
+        getActivityComponent().inject(this);
 
         startMainActivityIfPossible();
 
         setContentView(R.layout.activity_authentication);
+
+        authenticationService.setLoginResponseReceiver(this);
 
         setupUIReferences();
         setupEventHandlers();

@@ -58,5 +58,4 @@ public class NetworkConnectionImpl implements NetworkConnection {
         else
             return false;
     }
-
 }

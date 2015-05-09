@@ -14,15 +14,19 @@ import put.iwm.android.motionrecorder.exceptions.InvalidRegisterRequestException
  */
 public class RegistrationServiceImpl implements RegistrationService, RegisterResponseReceiver {
 
-    private RegisterRequestValidator registerRequestValidator = new RegisterRequestValidatorImpl();
+    private RegisterRequestValidator registerRequestValidator;// = new RegisterRequestValidatorImpl();
     private RegisterResponseReceiver registerResponseReceiver;
     private RegisterRequestAsyncTask registerRequestAsyncTask;
     private Context context;
 
-    public RegistrationServiceImpl(Context context, RegisterResponseReceiver registerResponseReceiver) {
-
-        //TODO
+    public RegistrationServiceImpl(Context context, RegisterRequestValidator registerRequestValidator) {
         this.context = context;
+        this.registerRequestValidator = registerRequestValidator;
+    }
+
+    public RegistrationServiceImpl(Context context, RegisterRequestValidator registerRequestValidator, RegisterResponseReceiver registerResponseReceiver) {
+        this.context = context;
+        this.registerRequestValidator = registerRequestValidator;
         this.registerResponseReceiver = registerResponseReceiver;
     }
 
@@ -50,5 +54,10 @@ public class RegistrationServiceImpl implements RegistrationService, RegisterRes
     @Override
     public void processRegisterResponse(RegisterResponse response) {
         registerResponseReceiver.processRegisterResponse(response);
+    }
+
+    @Override
+    public void setRegisterResponseReceiver(RegisterResponseReceiver registerResponseReceiver) {
+        this.registerResponseReceiver = registerResponseReceiver;
     }
 }

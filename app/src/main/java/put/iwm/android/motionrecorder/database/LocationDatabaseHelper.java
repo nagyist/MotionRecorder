@@ -16,7 +16,7 @@ public class LocationDatabaseHelper extends SQLiteOpenHelper {
             "longitude REAL NOT NULL," +
             "altitude REAL," +
             "move_distance REAL," +
-            "move_time TEXT," +
+            "move_time INTEGER," +
             "serial_number INTEGER," +
             "previous_point_id INTEGER REFERENCES route_points(id));";
 

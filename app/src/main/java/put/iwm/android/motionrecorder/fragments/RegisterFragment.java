@@ -30,10 +30,6 @@ public class RegisterFragment extends Fragment {
     private DatePicker dateOfBirthPicker;
     private Button registerButton;
 
-    public RegisterFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -5,6 +5,8 @@ import android.content.Context;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import put.iwm.android.motionrecorder.asynctasks.LoginRequestAsyncTask;
 import put.iwm.android.motionrecorder.exceptions.InvalidLoginRequestException;
 
@@ -13,16 +15,20 @@ import put.iwm.android.motionrecorder.exceptions.InvalidLoginRequestException;
  */
 public class AuthenticationServiceImpl implements AuthenticationService, LoginResponseReceiver {
 
-    private LoginRequestValidator loginRequestValidator = new LoginRequestValidatorImpl();
+    private LoginRequestValidator loginRequestValidator;
     private LoginResponseReceiver loginResponseReceiver;
     private LoginRequestAsyncTask loginRequestAsyncTask;
     private Context context;
 
-    public AuthenticationServiceImpl(Context context, LoginResponseReceiver loginResponseReceiver) {
-
-        //TODO
+    public AuthenticationServiceImpl(Context context, LoginRequestValidator loginRequestValidator) {
+        this.loginRequestValidator = loginRequestValidator;
         this.context = context;
+    }
+
+    public AuthenticationServiceImpl(Context context, LoginRequestValidator loginRequestValidator, LoginResponseReceiver loginResponseReceiver) {
+        this.loginRequestValidator = loginRequestValidator;
         this.loginResponseReceiver = loginResponseReceiver;
+        this.context = context;
     }
 
     @Override

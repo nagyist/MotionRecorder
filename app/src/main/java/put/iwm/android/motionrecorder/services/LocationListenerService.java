@@ -1,10 +1,8 @@
 package put.iwm.android.motionrecorder.services;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -18,7 +16,11 @@ import com.google.android.gms.location.LocationServices;
 
 import java.sql.SQLException;
 
+import javax.inject.Inject;
+
+import put.iwm.android.motionrecorder.application.MotionRecorderApplication;
 import put.iwm.android.motionrecorder.database.LocationDatabaseAdapter;
+import put.iwm.android.motionrecorder.training.TrainingTimer;
 
 /**
  * Created by Szymon on 2015-04-23.
@@ -33,10 +35,15 @@ public class LocationListenerService extends Service implements LocationListener
     private LocationRequest locationRequest;
     private LocationDatabaseAdapter locationRepository;
 
-    private LocationManager locationManager;
+    @Inject
+    TrainingTimer trainingTimer;
+
+    //private LocationManager locationManager;
 
     @Override
     public void onCreate() {
+
+        MotionRecorderApplication.getApplicationComponent().inject(this);
 
         requestLocationUpdates();
     }
@@ -115,8 +122,9 @@ public class LocationListenerService extends Service implements LocationListener
 
     private void tryProcessLocationUpdate(Location location) throws SQLException {
 
+        //TODO
         locationRepository.open();
-        locationRepository.addLocation(location);
+        locationRepository.addLocation(location, trainingTimer.getDurationTime());
         locationRepository.close();
 
         Intent intent = new Intent(ACTION);

@@ -125,8 +125,6 @@ public class MainActivity extends BaseActivity {
         setupActionBar();
 
         switchCurrentFragment(fragmentsTitles.get(0));
-
-        //restoreState(savedInstanceState);
     }
 
     private void restoreState(Bundle savedState) {

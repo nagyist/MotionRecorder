@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import put.iwm.android.motionrecorder.database.models.RoutePoint;
+
 /**
  * Created by Szymon on 2015-04-23.
  */
@@ -45,14 +47,14 @@ public class LocationDatabaseAdapter {
         locationDatabaseHelper.close();
     }
 
-    public long addLocation(Location location) {
+    public long addLocation(Location location, long time) {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(LATITUDE_COLUMN, location.getLatitude());
         contentValues.put(LONGITUDE_COLUMN, location.getLongitude());
         contentValues.put(ALTITUDE_COLUMN, location.getAltitude());
         contentValues.put(MOVE_DISTANCE_COLUMN, 0);
-        contentValues.put(MOVE_TIME_COLUMN, 0);
+        contentValues.put(MOVE_TIME_COLUMN, time);
         contentValues.put(SERIAL_NUMBER_COLUMN, 0);
 
         return database.insert(LocationDatabaseHelper.TABLE_NAME, null, contentValues);
@@ -74,26 +76,47 @@ public class LocationDatabaseAdapter {
         return new LatLng(latitude, longitude);
     }
 
-    public List<LatLng> getLastLocations(int limit) {
+    public List<RoutePoint> getLastLocations() {
+
+        return getLastLocations(0);
+    }
+
+    public List<RoutePoint> getLastLocations(int limit) {
+
+        String limitClause = null;
+
+        if(limit > 0)
+            limitClause = String.valueOf(limit);
 
         Cursor cursor = database.query(LocationDatabaseHelper.TABLE_NAME,
-                new String[] { ROWID_COLUMN, LATITUDE_COLUMN, LONGITUDE_COLUMN },
-                null, null, null, null, "_id DESC", "2");
+                new String[] { ROWID_COLUMN, LATITUDE_COLUMN, LONGITUDE_COLUMN, MOVE_TIME_COLUMN },
+                null, null, null, null, "_id DESC", limitClause);
 
-        List<LatLng> result = new LinkedList<>();
+        List<RoutePoint> result = new LinkedList<>();
 
         cursor.moveToFirst();
 
         do {
             double latitude = cursor.getDouble(1);
             double longitude = cursor.getDouble(2);
+            long moveTime = cursor.getLong(3);
 
-            result.add(new LatLng(latitude, longitude));
+            RoutePoint routePoint = new RoutePoint();
+            routePoint.setLatitude(latitude);
+            routePoint.setLongitude(longitude);
+            routePoint.setMoveTime(moveTime);
+
+            result.add(routePoint);
         } while(cursor.moveToNext());
 
         cursor.close();
 
         return result;
+    }
+
+    public void deleteLastLocations() {
+
+        database.delete(LocationDatabaseHelper.TABLE_NAME, null, null);
     }
 
 }

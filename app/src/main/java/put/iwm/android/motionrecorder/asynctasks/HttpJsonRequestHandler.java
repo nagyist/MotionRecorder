@@ -50,6 +50,7 @@ public class HttpJsonRequestHandler implements LoginRequestHandler, RegisterRequ
         httpClient = new DefaultHttpClient();
     }
 
+    @Override
     public LoginResponse performLoginRequest(LoginRequest request) {
 
         try {

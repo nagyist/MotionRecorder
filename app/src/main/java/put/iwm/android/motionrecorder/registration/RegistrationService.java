@@ -9,4 +9,5 @@ public interface RegistrationService {
 
     public void processRegisterRequest(RegisterRequest registerRequest) throws InvalidRegisterRequestException;
     public void validateRegisterRequest(RegisterRequest registerRequest) throws InvalidRegisterRequestException;
+    public void setRegisterResponseReceiver(RegisterResponseReceiver registerResponseReceiver);
 }
