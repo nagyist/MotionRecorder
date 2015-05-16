@@ -4,6 +4,8 @@ import android.os.Handler;
 
 import org.apache.commons.lang3.time.StopWatch;
 
+import put.iwm.android.motionrecorder.contracts.TimerObserver;
+
 /**
  * Created by Szymon on 2015-05-03.
  */
@@ -13,16 +15,19 @@ public class TrainingTimerImpl implements TrainingTimer {
     private long startTime;
     private long stopTime;
     private long durationTime;
-    private TimerListener timerListener;
+    private TimerObserver timerObserver;
     private StopWatch stopWatch;
     private Handler handler;
     private boolean nextUpdate;
 
-    public TrainingTimerImpl(TimerListener timerListener) {
-
-        this.timerListener = timerListener;
+    public TrainingTimerImpl() {
         stopWatch = new StopWatch();
         handler = new Handler();
+    }
+
+    public TrainingTimerImpl(TimerObserver timerObserver) {
+        this();
+        this.timerObserver = timerObserver;
     }
 
     private Runnable updateTimerThread = new Runnable() {
@@ -31,7 +36,7 @@ public class TrainingTimerImpl implements TrainingTimer {
         public void run() {
 
             durationTime = stopWatch.getTime();
-            timerListener.processTimerUpdate(durationTime);
+            timerObserver.processTimerUpdate(durationTime);
 
             if(nextUpdate)
                 handler.postDelayed(this, 200);
@@ -84,7 +89,7 @@ public class TrainingTimerImpl implements TrainingTimer {
         return durationTime;
     }
 
-    public void setTimerListener(TimerListener timerListener) {
-        this.timerListener = timerListener;
+    public void setTimerObserver(TimerObserver timerObserver) {
+        this.timerObserver = timerObserver;
     }
 }

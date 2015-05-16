@@ -23,12 +23,11 @@ import put.iwm.android.motionrecorder.exceptions.InvalidLoginRequestException;
 
 public class AuthenticationActivity extends BaseActivity implements LoginResponseReceiver {
 
+    @Inject AuthenticationService authenticationService;
     private EditText usernameEditText;
     private EditText passwordEditText;
     private Button loginButton;
     private Button registerButton;
-    @Inject
-    AuthenticationService authenticationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,8 +144,6 @@ public class AuthenticationActivity extends BaseActivity implements LoginRespons
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -9,11 +9,10 @@ import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import put.iwm.android.motionrecorder.database.models.RoutePoint;
+import put.iwm.android.motionrecorder.training.RoutePoint;
 
 /**
  * Created by Szymon on 2015-04-23.

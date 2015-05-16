@@ -22,7 +22,6 @@ android {
             resValue "string", "google_maps_api_key", "AIzaSyAz1RhjwzdnWNMSuBT9Sk8ooRIdfLMj50o"
         }
     }
-
 }
 
 dependencies {
@@ -33,6 +32,7 @@ dependencies {
 
     compile 'com.google.dagger:dagger:2.1-SNAPSHOT'
     apt 'com.google.dagger:dagger-compiler:2.1-SNAPSHOT'
+    compile 'io.realm:realm-android:0.80.1'
     provided 'org.glassfish:javax.annotation:10.0-b28'
     compile 'com.google.android.gms:play-services:7.0.0'
 }

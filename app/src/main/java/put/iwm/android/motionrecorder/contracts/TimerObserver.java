@@ -1,9 +1,9 @@
-package put.iwm.android.motionrecorder.training;
+package put.iwm.android.motionrecorder.contracts;
 
 /**
  * Created by Szymon on 2015-05-03.
  */
-public interface TimerListener {
+public interface TimerObserver {
 
     public void processTimerUpdate(long time);
 }

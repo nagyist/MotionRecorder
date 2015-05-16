@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import javax.inject.Inject;
 
 import put.iwm.android.motionrecorder.application.MotionRecorderApplication;
-import put.iwm.android.motionrecorder.database.LocationDatabaseAdapter;
+import put.iwm.android.motionrecorder.contracts.LocationObserver;
 import put.iwm.android.motionrecorder.training.TrainingTimer;
 
 /**
@@ -33,12 +33,9 @@ public class LocationListenerService extends Service implements LocationListener
     private static final float updateDistance = 0;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
-    private LocationDatabaseAdapter locationRepository;
 
-    @Inject
-    TrainingTimer trainingTimer;
-
-    //private LocationManager locationManager;
+    @Inject LocationObserver locationObserver;
+    @Inject TrainingTimer trainingTimer;
 
     @Override
     public void onCreate() {
@@ -59,14 +56,9 @@ public class LocationListenerService extends Service implements LocationListener
 
     private void requestLocationUpdates() {
 
-        locationRepository = new LocationDatabaseAdapter(getBaseContext());
-
         createGoogleApiClient();
         createLocationRequest();
         connectGoogleApiClient();
-
-        //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, updateTime, updateDistance, this);
     }
 
     private synchronized void createGoogleApiClient() {
@@ -82,6 +74,7 @@ public class LocationListenerService extends Service implements LocationListener
         locationRequest = new LocationRequest();
         locationRequest.setInterval(updateTime);
         locationRequest.setFastestInterval(updateTime);
+        locationRequest.setSmallestDisplacement(updateDistance);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -113,39 +106,10 @@ public class LocationListenerService extends Service implements LocationListener
 
     private void processLocationUpdate(Location location) {
 
-        try {
-            tryProcessLocationUpdate(location);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+        location.setTime(trainingTimer.getDurationTime());
+        locationObserver.processLocationUpdate(location);
 
-    private void tryProcessLocationUpdate(Location location) throws SQLException {
-
-        //TODO
-        locationRepository.open();
-        locationRepository.addLocation(location, trainingTimer.getDurationTime());
-        locationRepository.close();
-
-        Intent intent = new Intent(ACTION);
-        sendBroadcast(intent);
-
-        Log.i(TAG, "Wysłano powiadomienie do mapy!");
-    }
-
-    //@Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.i(TAG, "onStatusChanged!");
-    }
-
-    //@Override
-    public void onProviderEnabled(String provider) {
-        Log.i(TAG, "onProviderEnabled!");
-    }
-
-    //@Override
-    public void onProviderDisabled(String provider) {
-        Log.i(TAG, "onProviderDisabled!");
+        Log.i(TAG, "Aktualizuję lokalizację!");
     }
 
     @Override
@@ -158,7 +122,6 @@ public class LocationListenerService extends Service implements LocationListener
 
         super.onDestroy();
         LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-        //locationManager.removeUpdates(this);
         stopSelf();
 
         Log.i(TAG, "onDestroy!");

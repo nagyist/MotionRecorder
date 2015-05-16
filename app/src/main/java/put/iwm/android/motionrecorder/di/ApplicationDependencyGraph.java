@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 
 import put.iwm.android.motionrecorder.activities.AuthenticationActivity;
+import put.iwm.android.motionrecorder.fragments.RouteMapFragment;
 import put.iwm.android.motionrecorder.fragments.StartTrainingFragment;
 import put.iwm.android.motionrecorder.services.LocationListenerService;
 
@@ -13,5 +14,6 @@ import put.iwm.android.motionrecorder.services.LocationListenerService;
 public interface ApplicationDependencyGraph {
 
     public void inject(StartTrainingFragment fragment);
+    public void inject(RouteMapFragment fragment);
     public void inject(LocationListenerService service);
 }

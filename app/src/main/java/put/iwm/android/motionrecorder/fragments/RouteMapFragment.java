@@ -1,12 +1,7 @@
 package put.iwm.android.motionrecorder.fragments;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,84 +20,36 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import put.iwm.android.motionrecorder.R;
-import put.iwm.android.motionrecorder.database.LocationDatabaseAdapter;
-import put.iwm.android.motionrecorder.database.models.RoutePoint;
-import put.iwm.android.motionrecorder.services.LocationListenerService;
+import javax.inject.Inject;
 
-public class RouteMapFragment extends Fragment  {
+import put.iwm.android.motionrecorder.R;
+import put.iwm.android.motionrecorder.application.MotionRecorderApplication;
+import put.iwm.android.motionrecorder.contracts.RouteObserver;
+import put.iwm.android.motionrecorder.training.RoutePoint;
+import put.iwm.android.motionrecorder.training.TrainingManager;
+
+public class RouteMapFragment extends Fragment implements RouteObserver {
 
     private static final String TAG = RouteMapFragment.class.toString();
     private OnFragmentInteractionListener mListener;
     private View view;
     private GoogleMap map;
     private MapView mapView;
-
-    private BroadcastReceiver locationBroadcastReceiver;
-
-    private LocationDatabaseAdapter locationRepository;
+    @Inject TrainingManager trainingManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
+        MotionRecorderApplication.getApplicationComponent().inject(this);
+
+        trainingManager.setRouteObserver(this);
+
         MapsInitializer.initialize(getActivity());
-
-        locationRepository = new LocationDatabaseAdapter(getActivity());
-
-        setupBroadcastReceiver();
-    }
-
-    private void setupBroadcastReceiver() {
-
-        locationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                Log.i(TAG, "Otrzymano powiadomienie od usługi.");
-                processLocationUpdate();
-            }
-        };
-
-        IntentFilter intentFilter = new IntentFilter(LocationListenerService.ACTION);
-        getActivity().registerReceiver(locationBroadcastReceiver, intentFilter);
-    }
-
-    private void processLocationUpdate() {
-
-        try {
-            tryProcessLocationUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void tryProcessLocationUpdate() throws SQLException {
-
-        locationRepository.open();
-        List<RoutePoint> lastLocations = locationRepository.getLastLocations(2);
-        locationRepository.close();
-
-        List<LatLng> coordinates = new LinkedList<>();
-        for(RoutePoint location : lastLocations) {
-            coordinates.add(new LatLng(location.getLatitude(), location.getLongitude()));
-        }
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coordinates.get(0), 16.2f);
-        map.animateCamera(cameraUpdate);
-
-        PolylineOptions polyline = new PolylineOptions();
-        polyline.addAll(coordinates);
-        polyline.width(4.2f);
-        polyline.color(Color.rgb(0x42, 0x85, 0xF2));
-        polyline.geodesic(true);
-
-        map.addPolyline(polyline);
     }
 
     @Override
@@ -142,6 +89,25 @@ public class RouteMapFragment extends Fragment  {
     }
 
     @Override
+    public void processRouteUpdate(List<RoutePoint> routePoints) {
+
+        List<LatLng> coordinates = new LinkedList<>();
+        for(RoutePoint routePoint : routePoints)
+            coordinates.add(new LatLng(routePoint.getLatitude(), routePoint.getLongitude()));
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coordinates.get(coordinates.size()-1), 16.2f);
+        map.animateCamera(cameraUpdate);
+
+        PolylineOptions polyline = new PolylineOptions();
+        polyline.addAll(coordinates);
+        polyline.width(4.2f);
+        polyline.color(Color.rgb(0x42, 0x85, 0xF2));
+        polyline.geodesic(true);
+
+        map.addPolyline(polyline);
+    }
+
+    @Override
     public void onResume() {
 
         super.onResume();
@@ -161,7 +127,6 @@ public class RouteMapFragment extends Fragment  {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(locationBroadcastReceiver);
     }
 
     @Override

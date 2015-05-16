@@ -1,11 +1,6 @@
 package put.iwm.android.motionrecorder.fragments;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -16,24 +11,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.sql.SQLException;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import put.iwm.android.motionrecorder.R;
 import put.iwm.android.motionrecorder.application.MotionRecorderApplication;
-import put.iwm.android.motionrecorder.database.LocationDatabaseAdapter;
-import put.iwm.android.motionrecorder.database.models.RoutePoint;
-import put.iwm.android.motionrecorder.training.TimerListener;
+import put.iwm.android.motionrecorder.contracts.TimerObserver;
 import put.iwm.android.motionrecorder.training.TrainingManager;
-import put.iwm.android.motionrecorder.services.LocationListenerService;
+import put.iwm.android.motionrecorder.contracts.TrainingObserver;
 import put.iwm.android.motionrecorder.training.TrainingTimer;
 
-public class StartTrainingFragment extends Fragment implements TimerListener {
+public class StartTrainingFragment extends Fragment implements TimerObserver, TrainingObserver {
 
     private static final String TAG = StartTrainingFragment.class.toString();
-    private OnFragmentInteractionListener mListener;
     private View rootView;
     private TextView trainingTimerTextView;
     private TextView trainingDistanceTextView;
@@ -42,16 +33,10 @@ public class StartTrainingFragment extends Fragment implements TimerListener {
     private Button finishTrainingButton;
     private Button resumeTrainingButton;
     private Button pauseTrainingButton;
-    private Intent locationServiceIntent;
-    private BroadcastReceiver locationBroadcastReceiver;
-    private LocationDatabaseAdapter locationRepository;
 
-    @Inject
-    TrainingManager trainingManager;
-    @Inject
-    TextGenerator textGenerator;
-    @Inject
-    TrainingTimer trainingTimer;
+    @Inject TextGenerator textGenerator;
+    @Inject TrainingManager trainingManager;
+    @Inject TrainingTimer trainingTimer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,14 +45,12 @@ public class StartTrainingFragment extends Fragment implements TimerListener {
         MotionRecorderApplication.getApplicationComponent().inject(this);
 
         rootView = inflater.inflate(R.layout.fragment_start_training, container, false);
-        locationServiceIntent = new Intent(getActivity(), LocationListenerService.class);
-        locationRepository = new LocationDatabaseAdapter(getActivity());
 
-        trainingTimer.setTimerListener(this);
+        trainingTimer.setTimerObserver(this);
+        trainingManager.setTrainingObserver(this);
 
         setupUIReferences();
         setupEventHandlers();
-        setupBroadcastReceiver();
         updateUI();
 
         return rootView;
@@ -127,59 +110,40 @@ public class StartTrainingFragment extends Fragment implements TimerListener {
 
     private void startTrainingButtonClicked() {
 
-        //TODO
-        try {
-            locationRepository.open();
-            locationRepository.deleteLastLocations();
-            locationRepository.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        getActivity().startService(locationServiceIntent);
         trainingManager.startTraining();
+        resetUIFields();
         updateUI();
+    }
+
+    private void resetUIFields() {
+
+        trainingTimerTextView.setText(R.string.timer_init_value);
+        trainingDistanceTextView.setText(R.string.distance_init_value);
+        trainingSpeedTextView.setText(R.string.speed_init_value);
     }
 
     private void finishTrainingButton() {
 
-        getActivity().stopService(locationServiceIntent);
         trainingManager.finishTraining();
         updateUI();
     }
 
     private void resumeTrainingButtonClicked() {
 
-        getActivity().startService(locationServiceIntent);
         trainingManager.resumeTraining();
         updateUI();
     }
 
     private void pauseTrainingButtonClicked() {
 
-        getActivity().stopService(locationServiceIntent);
         trainingManager.pauseTraining();
         updateUI();
-    }
-
-    private void setupBroadcastReceiver() {
-
-        locationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                Log.i(TAG, "Otrzymano powiadomienie od usługi.");
-                processLocationUpdate();
-            }
-        };
-
-        IntentFilter intentFilter = new IntentFilter(LocationListenerService.ACTION);
-        getActivity().registerReceiver(locationBroadcastReceiver, intentFilter);
     }
 
     private void updateUI() {
 
         if(trainingManager.isTrainingInProgress()) {
+
             if(trainingManager.isTrainingPaused()) {
                 startTrainingButton.setVisibility(View.GONE);
                 finishTrainingButton.setVisibility(View.VISIBLE);
@@ -206,81 +170,29 @@ public class StartTrainingFragment extends Fragment implements TimerListener {
         trainingTimerTextView.setText(timeText);
     }
 
-    private void processLocationUpdate() {
+    @Override
+    public void processTrainingUpdate(Map<String, String> responseModel) {
 
-        try {
-            tryProcessLocationUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void tryProcessLocationUpdate() throws SQLException {
-
-        locationRepository.open();
-        List<RoutePoint> lastLocations = locationRepository.getLastLocations();
-        locationRepository.close();
-
-        float totalDistance = calculateTotalDistance(lastLocations);
-        String distanceText = textGenerator.createDistanceText(totalDistance);
-        trainingDistanceTextView.setText(distanceText);
-
-        float currentSpeed = calculateCurrentSpeed(lastLocations);
-        String speedText = textGenerator.createSpeedText(currentSpeed);
+        String speedText = textGenerator.createSpeedText(Float.valueOf(responseModel.get("speed")));
         trainingSpeedTextView.setText(speedText);
-    }
 
-    private float calculateCurrentSpeed(List<RoutePoint> locations) {
-
-        float currentSpeed = 0;
-
-        if(locations.size() >= 2) {
-            float partialDistance = calculateTotalDistance(locations.subList(0, 2));
-            long moveTime = (locations.get(0).getMoveTime() - locations.get(1).getMoveTime()) / 1000;
-            currentSpeed = partialDistance / (float) moveTime;
-        }
-
-        return currentSpeed;
-    }
-
-    private float calculateTotalDistance(List<RoutePoint> locations) {
-
-        float totalDistance = 0;
-        float []partialDistance = new float[3];
-
-        if(locations.size() >= 2) {
-
-            for(int i = 0; i + 1 < locations.size(); i++) {
-
-                RoutePoint firstLocation = locations.get(i);
-                RoutePoint secondLocation = locations.get(i + 1);
-
-                Location.distanceBetween(firstLocation.getLatitude(), firstLocation.getLongitude(), secondLocation.getLatitude(), secondLocation.getLongitude(), partialDistance);
-
-                totalDistance += partialDistance[0];
-            }
-        }
-
-        return totalDistance;
+        String distanceText = textGenerator.createDistanceText(Float.valueOf(responseModel.get("distance")));
+        trainingDistanceTextView.setText(distanceText);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(locationBroadcastReceiver);
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
-        //mListener = (OnFragmentInteractionListener) activity;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     /**

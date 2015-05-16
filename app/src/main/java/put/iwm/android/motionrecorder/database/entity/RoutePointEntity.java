@@ -1,40 +1,26 @@
-package put.iwm.android.motionrecorder.database.models;
+package put.iwm.android.motionrecorder.database.entity;
+import io.realm.RealmList;
+import io.realm.RealmObject;
 
 /**
- * Created by Szymon on 2015-04-23.
+ * Created by Szymon on 2015-05-16.
  */
-public class RoutePoint {
+public class RoutePointEntity extends RealmObject {
 
-    private int id;
+    private long id;
     private double latitude;
     private double longitude;
     private double altitude;
     private double moveDistance;
     private long moveTime;
     private int serialNumber;
-    private RoutePoint previousPoint;
+    private RealmList<RouteEntity> routeEntity;
 
-    public RoutePoint() {
-
-    }
-
-    public RoutePoint(int id, double latitude, double longitude, double altitude, double moveDistance,
-                      long moveTime, int serialNumber, RoutePoint previousPoint) {
-        this.id = id;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.altitude = altitude;
-        this.moveDistance = moveDistance;
-        this.moveTime = moveTime;
-        this.serialNumber = serialNumber;
-        this.previousPoint = previousPoint;
-    }
-
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -86,12 +72,11 @@ public class RoutePoint {
         this.serialNumber = serialNumber;
     }
 
-    public RoutePoint getPreviousPoint() {
-        return previousPoint;
+    public RealmList<RouteEntity> getRouteEntity() {
+        return routeEntity;
     }
 
-    public void setPreviousPoint(RoutePoint previousPoint) {
-        this.previousPoint = previousPoint;
+    public void setRouteEntity(RealmList<RouteEntity> routeEntity) {
+        this.routeEntity = routeEntity;
     }
-
 }

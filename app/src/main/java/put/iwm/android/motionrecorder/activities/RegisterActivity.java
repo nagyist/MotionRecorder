@@ -24,8 +24,7 @@ import put.iwm.android.motionrecorder.registration.RegistrationServiceImpl;
 
 public class RegisterActivity extends BaseActivity implements RegisterFragment.OnRegisterFragmentInteractionListener, RegisterResponseReceiver {
 
-    @Inject
-    RegistrationService registrationService;
+    @Inject RegistrationService registrationService;
     private Fragment registerFragment;
 
     @Override

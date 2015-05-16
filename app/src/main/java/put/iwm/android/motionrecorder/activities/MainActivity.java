@@ -234,7 +234,6 @@ public class MainActivity extends BaseActivity {
     private void logout() {
 
         sessionManager.logoutUser();
-
         redirectToAuthenticationActivity();
     }
 
