@@ -2,6 +2,8 @@ package put.iwm.android.motionrecorder.application;
 
 import android.app.Application;
 
+import com.activeandroid.ActiveAndroid;
+
 import put.iwm.android.motionrecorder.di.ApplicationComponent;
 
 /**
@@ -14,6 +16,7 @@ public class MotionRecorderApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ActiveAndroid.initialize(this);
         applicationComponent = ApplicationComponent.Initializer.init(this);
     }
 

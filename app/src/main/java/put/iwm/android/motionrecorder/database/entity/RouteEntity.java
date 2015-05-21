@@ -1,36 +1,55 @@
 package put.iwm.android.motionrecorder.database.entity;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 import java.util.List;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
+import put.iwm.android.motionrecorder.training.Route;
 
 /**
  * Created by Szymon on 2015-05-16.
  */
-public class RouteEntity extends RealmObject {
+@Table(name = "routes")
+public class RouteEntity extends Model {
 
-    private long id;
-    private RealmList<RoutePointEntity> routePoints;
+    private List<RoutePointEntity> routePoints;
+    @Column
     private double totalDistance;
+    @Column
     private double partialDistance;
+    @Column
     private double currentSpeed;
+    @Column
     private int routePointSerialNumber;
-    private RealmList<DoubleEntity> speedMeasurementPoints;
+    @Column
+    private int speedPointSerialNumber;
+    private List<SpeedPointEntity> speedMeasurementPoints;
 
-    public long getId() {
-        return id;
+    public RouteEntity() {
+        super();
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public RouteEntity(Route route) {
+
+        this();
+        totalDistance = route.getTotalDistance();
+        partialDistance = route.getPartialDistance();
+        currentSpeed = route.getCurrentSpeed();
+        routePointSerialNumber = route.getRoutePointSerialNumber();
+        speedPointSerialNumber = route.getSpeedPointSerialNumber();
     }
 
-    public RealmList<RoutePointEntity> getRoutePoints() {
+    public List<RoutePointEntity> getRoutePoints() {
+
+        if(routePoints == null)
+            routePoints = getMany(RoutePointEntity.class, "route_id");
+
         return routePoints;
     }
 
-    public void setRoutePoints(RealmList<RoutePointEntity> routePoints) {
+    public void setRoutePoints(List<RoutePointEntity> routePoints) {
         this.routePoints = routePoints;
     }
 
@@ -66,11 +85,23 @@ public class RouteEntity extends RealmObject {
         this.routePointSerialNumber = routePointSerialNumber;
     }
 
-    public RealmList<DoubleEntity> getSpeedMeasurementPoints() {
+    public int getSpeedPointSerialNumber() {
+        return speedPointSerialNumber;
+    }
+
+    public void setSpeedPointSerialNumber(int speedPointSerialNumber) {
+        this.speedPointSerialNumber = speedPointSerialNumber;
+    }
+
+    public List<SpeedPointEntity> getSpeedMeasurementPoints() {
+
+        if(speedMeasurementPoints == null)
+            speedMeasurementPoints = getMany(SpeedPointEntity.class, "route_id");
+
         return speedMeasurementPoints;
     }
 
-    public void setSpeedMeasurementPoints(RealmList<DoubleEntity> speedMeasurementPoints) {
+    public void setSpeedMeasurementPoints(List<SpeedPointEntity> speedMeasurementPoints) {
         this.speedMeasurementPoints = speedMeasurementPoints;
     }
 }

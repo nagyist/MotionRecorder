@@ -40,6 +40,7 @@
     <string-array name="drawer_list_items">
         <item>Trening</item>
         <item>Trasa</item>
+        <item>Zapisane</item>
     </string-array>
 
     <string name="drawer_list_open">Otwórz menu</string>
@@ -53,5 +54,8 @@
 
     <string name="speed_label">Prędkość\nm/s</string>
     <string name="speed_init_value">0.00</string>
+
+    <string name="start_training_date_label">Data rozpoczęcia</string>
+    <string name="finish_training_date_label">Data zakończenia</string>
 
 </resources>

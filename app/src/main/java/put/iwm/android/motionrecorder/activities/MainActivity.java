@@ -1,12 +1,12 @@
 package put.iwm.android.motionrecorder.activities;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
@@ -14,11 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +24,9 @@ import put.iwm.android.motionrecorder.R;
 import put.iwm.android.motionrecorder.adapters.NavigationDrawerAdapter;
 import put.iwm.android.motionrecorder.base.BaseActivity;
 import put.iwm.android.motionrecorder.exceptions.FragmentNotFoundException;
+import put.iwm.android.motionrecorder.fragments.ActiveTrainingFragment;
 import put.iwm.android.motionrecorder.fragments.RouteMapFragment;
-import put.iwm.android.motionrecorder.fragments.StartTrainingFragment;
+import put.iwm.android.motionrecorder.fragments.TrainingListFragment;
 
 
 public class MainActivity extends BaseActivity {
@@ -51,18 +49,22 @@ public class MainActivity extends BaseActivity {
     private void selectItem(int position) {
 
         String targetFragmentTitle = fragmentsTitles.get(position);
-
-        try {
-            switchCurrentFragment(targetFragmentTitle);
-        } catch (FragmentNotFoundException e) {
-            System.err.println(e);
-        }
+        currentFragmentTitle = targetFragmentTitle;
 
         drawerListAdapter.setSelectedItemPosition(position);
         drawerLayout.closeDrawer(drawerList);
     }
 
     private void switchCurrentFragment(String targetFragmentTitle) throws FragmentNotFoundException {
+
+        try {
+            trySwitchCurrentFragment(targetFragmentTitle);
+        } catch (FragmentNotFoundException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private void trySwitchCurrentFragment(String targetFragmentTitle) {
 
         if(!fragments.containsKey(targetFragmentTitle))
             throw new FragmentNotFoundException(String.format("Nie ma fragmentu o tytule '%s'", targetFragmentTitle));
@@ -88,8 +90,12 @@ public class MainActivity extends BaseActivity {
 
     private class ActionBarDrawerToggleImpl extends ActionBarDrawerToggle {
 
+        private Runnable onDrawerClosedRunnable;
+        private Handler onDrawerClosedHandler;
+
         public ActionBarDrawerToggleImpl(Activity activity, DrawerLayout drawerLayout, int openDrawerContentDescRes, int closeDrawerContentDescRes) {
             super(activity, drawerLayout, openDrawerContentDescRes, closeDrawerContentDescRes);
+            onDrawerClosedHandler = new Handler();
         }
 
         @Override
@@ -99,8 +105,26 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onDrawerClosed(View view) {
+
+            onDrawerClosedRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    switchCurrentFragment(currentFragmentTitle);
+                }
+            };
+
+            onDrawerClosedHandler.post(onDrawerClosedRunnable);
+
             super.onDrawerClosed(view);
             setActionBarTitle(currentFragmentTitle);
+        }
+
+        public Runnable getOnDrawerClosedRunnable() {
+            return onDrawerClosedRunnable;
+        }
+
+        public void setOnDrawerClosedRunnable(Runnable onDrawerClosedRunnable) {
+            this.onDrawerClosedRunnable = onDrawerClosedRunnable;
         }
     }
 
@@ -146,8 +170,9 @@ public class MainActivity extends BaseActivity {
         fragmentsTitles = Arrays.asList( getResources().getStringArray(R.array.drawer_list_items) );
 
         fragments = new HashMap<String, Fragment>() {{
-            put(fragmentsTitles.get(0), new StartTrainingFragment());
+            put(fragmentsTitles.get(0), new ActiveTrainingFragment());
             put(fragmentsTitles.get(1), new RouteMapFragment());
+            put(fragmentsTitles.get(2), new TrainingListFragment());
         }};
     }
 

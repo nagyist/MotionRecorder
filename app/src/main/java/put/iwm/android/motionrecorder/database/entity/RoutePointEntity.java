@@ -1,27 +1,49 @@
 package put.iwm.android.motionrecorder.database.entity;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
+import java.util.List;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import put.iwm.android.motionrecorder.database.MotionRecorderDatabase;
+import put.iwm.android.motionrecorder.training.RoutePoint;
 
 /**
  * Created by Szymon on 2015-05-16.
  */
-public class RoutePointEntity extends RealmObject {
+@Table(name = "route_points")
+public class RoutePointEntity extends Model {
 
-    private long id;
+    @Column
     private double latitude;
+    @Column
     private double longitude;
+    @Column
     private double altitude;
+    @Column
     private double moveDistance;
+    @Column
     private long moveTime;
+    @Column
     private int serialNumber;
-    private RealmList<RouteEntity> routeEntity;
+    @Column(name = "route_id")
+    private RouteEntity routeEntity;
 
-    public long getId() {
-        return id;
+    public RoutePointEntity() {
+        super();
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public RoutePointEntity(RoutePoint routePoint) {
+
+        this();
+        latitude = routePoint.getLatitude();
+        longitude = routePoint.getLongitude();
+        altitude = routePoint.getAltitude();
+        moveDistance = routePoint.getMoveDistance();
+        moveTime = routePoint.getMoveTime();
+        serialNumber = routePoint.getSerialNumber();
     }
 
     public double getLatitude() {
@@ -72,11 +94,11 @@ public class RoutePointEntity extends RealmObject {
         this.serialNumber = serialNumber;
     }
 
-    public RealmList<RouteEntity> getRouteEntity() {
+    public RouteEntity getRouteEntity() {
         return routeEntity;
     }
 
-    public void setRouteEntity(RealmList<RouteEntity> routeEntity) {
+    public void setRouteEntity(RouteEntity routeEntity) {
         this.routeEntity = routeEntity;
     }
 }

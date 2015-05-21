@@ -121,4 +121,14 @@ public class TrainingManagerImpl implements TrainingManager, LocationObserver {
     public void setRouteObserver(RouteObserver routeObserver) {
         this.routeObserver = routeObserver;
     }
+
+    @Override
+    public void requestTrainingUpdate() {
+        updateTrainingObserver();
+    }
+
+    @Override
+    public void requestRouteUpdate() {
+        updateRouteObserver();
+    }
 }

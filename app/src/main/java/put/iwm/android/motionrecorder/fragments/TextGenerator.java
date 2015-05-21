@@ -34,12 +34,12 @@ public class TextGenerator {
         return time % 1000;
     }
 
-    public String createDistanceText(float distance) {
+    public String createDistanceText(double distance) {
         String distanceText = String.format(Locale.ENGLISH, "%.2f", distance);
         return distanceText;
     }
 
-    public String createSpeedText(float speed) {
+    public String createSpeedText(double speed) {
         String speedText = String.format(Locale.ENGLISH, "%.2f", speed);
         return speedText;
     }

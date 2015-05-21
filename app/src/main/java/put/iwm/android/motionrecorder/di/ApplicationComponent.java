@@ -3,10 +3,7 @@ package put.iwm.android.motionrecorder.di;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import put.iwm.android.motionrecorder.activities.AuthenticationActivity;
 import put.iwm.android.motionrecorder.application.MotionRecorderApplication;
-import put.iwm.android.motionrecorder.fragments.StartTrainingFragment;
-import put.iwm.android.motionrecorder.services.LocationListenerService;
 
 /**
  * Created by Szymon on 2015-05-06.

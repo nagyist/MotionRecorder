@@ -1,24 +1,44 @@
 package put.iwm.android.motionrecorder.database.entity;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
+import java.sql.Date;
+
 import io.realm.RealmObject;
+import put.iwm.android.motionrecorder.database.MotionRecorderDatabase;
 import put.iwm.android.motionrecorder.training.Route;
+import put.iwm.android.motionrecorder.training.Training;
 
 /**
  * Created by Szymon on 2015-05-16.
  */
-public class TrainingEntity extends RealmObject {
+@Table(name = "trainings")
+public class TrainingEntity extends Model {
 
-    private long id;
+    @Column
     private boolean inProgress;
+    @Column
     private boolean paused;
+    @Column
+    private Date startDate;
+    @Column
+    private Date finishDate;
+    @Column(name = "route_id")
     private RouteEntity routeEntity;
 
-    public long getId() {
-        return id;
+    public TrainingEntity() {
+        super();
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public TrainingEntity(Training training) {
+
+        this();
+        startDate = training.getStartDate();
+        finishDate = training.getFinishDate();
+        inProgress = training.isInProgress();
+        paused = training.isPaused();
     }
 
     public boolean isInProgress() {
@@ -37,6 +57,22 @@ public class TrainingEntity extends RealmObject {
         this.paused = paused;
     }
 
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(Date finishDate) {
+        this.finishDate = finishDate;
+    }
+
     public RouteEntity getRouteEntity() {
         return routeEntity;
     }
@@ -44,4 +80,5 @@ public class TrainingEntity extends RealmObject {
     public void setRouteEntity(RouteEntity routeEntity) {
         this.routeEntity = routeEntity;
     }
+
 }

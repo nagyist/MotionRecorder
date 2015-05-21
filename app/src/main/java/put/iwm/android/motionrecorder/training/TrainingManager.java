@@ -16,4 +16,6 @@ public interface TrainingManager {
     public boolean isTrainingPaused();
     public void setTrainingObserver(TrainingObserver trainingObserver);
     public void setRouteObserver(RouteObserver routeObserver);
+    public void requestTrainingUpdate();
+    public void requestRouteUpdate();
 }

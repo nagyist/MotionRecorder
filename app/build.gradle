@@ -32,7 +32,11 @@ dependencies {
 
     compile 'com.google.dagger:dagger:2.1-SNAPSHOT'
     apt 'com.google.dagger:dagger-compiler:2.1-SNAPSHOT'
+
     compile 'io.realm:realm-android:0.80.1'
+
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+
     provided 'org.glassfish:javax.annotation:10.0-b28'
     compile 'com.google.android.gms:play-services:7.0.0'
 }

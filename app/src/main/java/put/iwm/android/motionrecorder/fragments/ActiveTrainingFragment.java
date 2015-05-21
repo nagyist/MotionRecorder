@@ -22,9 +22,9 @@ import put.iwm.android.motionrecorder.training.TrainingManager;
 import put.iwm.android.motionrecorder.contracts.TrainingObserver;
 import put.iwm.android.motionrecorder.training.TrainingTimer;
 
-public class StartTrainingFragment extends Fragment implements TimerObserver, TrainingObserver {
+public class ActiveTrainingFragment extends Fragment implements TimerObserver, TrainingObserver {
 
-    private static final String TAG = StartTrainingFragment.class.toString();
+    private static final String TAG = ActiveTrainingFragment.class.toString();
     private View rootView;
     private TextView trainingTimerTextView;
     private TextView trainingDistanceTextView;
@@ -44,7 +44,7 @@ public class StartTrainingFragment extends Fragment implements TimerObserver, Tr
 
         MotionRecorderApplication.getApplicationComponent().inject(this);
 
-        rootView = inflater.inflate(R.layout.fragment_start_training, container, false);
+        rootView = inflater.inflate(R.layout.fragment_active_training, container, false);
 
         trainingTimer.setTimerObserver(this);
         trainingManager.setTrainingObserver(this);
@@ -52,6 +52,8 @@ public class StartTrainingFragment extends Fragment implements TimerObserver, Tr
         setupUIReferences();
         setupEventHandlers();
         updateUI();
+
+        trainingManager.requestTrainingUpdate();
 
         return rootView;
     }
@@ -173,10 +175,12 @@ public class StartTrainingFragment extends Fragment implements TimerObserver, Tr
     @Override
     public void processTrainingUpdate(Map<String, String> responseModel) {
 
-        String speedText = textGenerator.createSpeedText(Float.valueOf(responseModel.get("speed")));
+        Log.i(TAG, responseModel.get("speed"));
+
+        String speedText = textGenerator.createSpeedText(Double.valueOf(responseModel.get("speed")));
         trainingSpeedTextView.setText(speedText);
 
-        String distanceText = textGenerator.createDistanceText(Float.valueOf(responseModel.get("distance")));
+        String distanceText = textGenerator.createDistanceText(Double.valueOf(responseModel.get("distance")));
         trainingDistanceTextView.setText(distanceText);
     }
 

@@ -35,7 +35,7 @@ public class RouteMapFragment extends Fragment implements RouteObserver {
 
     private static final String TAG = RouteMapFragment.class.toString();
     private OnFragmentInteractionListener mListener;
-    private View view;
+    private View rootView;
     private GoogleMap map;
     private MapView mapView;
     @Inject TrainingManager trainingManager;
@@ -56,18 +56,20 @@ public class RouteMapFragment extends Fragment implements RouteObserver {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_route_map, container, false);
+        rootView = inflater.inflate(R.layout.fragment_route_map, container, false);
 
         setupMapView(savedInstanceState);
 
-        return view;
+        trainingManager.requestRouteUpdate();
+
+        return rootView;
     }
 
     private void setupMapView(Bundle savedInstanceState) {
 
         if(GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity()) == ConnectionResult.SUCCESS) {
 
-            mapView = (MapView) view.findViewById(R.id.map);
+            mapView = (MapView) rootView.findViewById(R.id.map);
             mapView.onCreate(savedInstanceState);
             mapView.onResume();
 
@@ -91,20 +93,23 @@ public class RouteMapFragment extends Fragment implements RouteObserver {
     @Override
     public void processRouteUpdate(List<RoutePoint> routePoints) {
 
-        List<LatLng> coordinates = new LinkedList<>();
-        for(RoutePoint routePoint : routePoints)
-            coordinates.add(new LatLng(routePoint.getLatitude(), routePoint.getLongitude()));
+        if(!routePoints.isEmpty()) {
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coordinates.get(coordinates.size()-1), 16.2f);
-        map.animateCamera(cameraUpdate);
+            List<LatLng> coordinates = new LinkedList<>();
+            for (RoutePoint routePoint : routePoints)
+                coordinates.add(new LatLng(routePoint.getLatitude(), routePoint.getLongitude()));
 
-        PolylineOptions polyline = new PolylineOptions();
-        polyline.addAll(coordinates);
-        polyline.width(4.2f);
-        polyline.color(Color.rgb(0x42, 0x85, 0xF2));
-        polyline.geodesic(true);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coordinates.get(coordinates.size() - 1), 16.2f);
+            map.animateCamera(cameraUpdate);
 
-        map.addPolyline(polyline);
+            PolylineOptions polyline = new PolylineOptions();
+            polyline.addAll(coordinates);
+            polyline.width(4.2f);
+            polyline.color(Color.rgb(0x42, 0x85, 0xF2));
+            polyline.geodesic(true);
+
+            map.addPolyline(polyline);
+        }
     }
 
     @Override

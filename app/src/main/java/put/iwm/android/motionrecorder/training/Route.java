@@ -15,8 +15,9 @@ public class Route {
     private double totalDistance;
     private double partialDistance;
     private double currentSpeed;
-    private List<Double> speedMeasurementPoints;
+    private List<SpeedPoint> speedMeasurementPoints;
     private int routePointSerialNumber;
+    private int speedPointSerialNumber;
 
     public Route() {
         routePoints = new LinkedList<>();
@@ -60,8 +61,8 @@ public class Route {
         float []result = new float[3];
         int numberOfRoutePoints = getNumberOfRoutePoints();
 
-        RoutePoint firstLocation = routePoints.get(numberOfRoutePoints-2);
-        RoutePoint secondLocation = routePoints.get(numberOfRoutePoints-1);
+        RoutePoint firstLocation = routePoints.get(numberOfRoutePoints - 2);
+        RoutePoint secondLocation = routePoints.get(numberOfRoutePoints - 1);
 
         Location.distanceBetween(firstLocation.getLatitude(), firstLocation.getLongitude(),
                 secondLocation.getLatitude(), secondLocation.getLongitude(), result);
@@ -73,7 +74,9 @@ public class Route {
 
         if(canUpdate()) {
             currentSpeed = calculateSpeed();
-            speedMeasurementPoints.add(currentSpeed);
+            speedPointSerialNumber++;
+            SpeedPoint speedPoint = new SpeedPoint(currentSpeed, speedPointSerialNumber);
+            speedMeasurementPoints.add(speedPoint);
         }
     }
 
@@ -82,9 +85,9 @@ public class Route {
         int numberOfRoutePoints = getNumberOfRoutePoints();
 
         RoutePoint firstLocation = routePoints.get(numberOfRoutePoints - 2);
-        RoutePoint secondLocation = routePoints.get(numberOfRoutePoints-1);
+        RoutePoint secondLocation = routePoints.get(numberOfRoutePoints - 1);
 
-        long moveTime = secondLocation.getMoveTime() - firstLocation.getMoveTime() / 1000;
+        long moveTime = (secondLocation.getMoveTime() - firstLocation.getMoveTime()) / 1000;
 
         return partialDistance / (double) moveTime;
     }
@@ -96,6 +99,7 @@ public class Route {
     public void removeAllRoutePoints() {
         routePoints.clear();
         totalDistance = 0;
+        routePointSerialNumber = 0;
     }
 
     public long getId() {
@@ -122,7 +126,15 @@ public class Route {
         return currentSpeed;
     }
 
-    public List<Double> getSpeedMeasurementPoints() {
+    public List<SpeedPoint> getSpeedMeasurementPoints() {
         return speedMeasurementPoints;
+    }
+
+    public int getRoutePointSerialNumber() {
+        return routePointSerialNumber;
+    }
+
+    public int getSpeedPointSerialNumber() {
+        return speedPointSerialNumber;
     }
 }

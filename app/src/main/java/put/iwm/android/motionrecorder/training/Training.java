@@ -1,6 +1,10 @@
 package put.iwm.android.motionrecorder.training;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
+
+import put.iwm.android.motionrecorder.database.entity.TrainingEntity;
 
 /**
  * Created by Szymon on 2015-05-14.
@@ -10,14 +14,29 @@ public class Training {
     private long id;
     private boolean inProgress;
     private boolean paused;
+    private Date startDate;
+    private Date finishDate;
     private Route route;
+    private CurrentDateGenerator currentDateGenerator;
 
     public Training() {
+        currentDateGenerator = new CurrentDateGeneratorImpl();
         route = new Route();
+    }
+
+    public Training(TrainingEntity trainingEntity) {
+
+        this();
+        id = trainingEntity.getId();
+        inProgress = trainingEntity.isInProgress();
+        paused = trainingEntity.isPaused();
+        startDate = trainingEntity.getStartDate();
+        finishDate = trainingEntity.getFinishDate();
     }
 
     public void start() {
         route.removeAllRoutePoints();
+        startDate = currentDateGenerator.generateCurrentDate();
         inProgress = true;
         paused = false;
     }
@@ -31,6 +50,7 @@ public class Training {
     }
 
     public void finish() {
+        finishDate = currentDateGenerator.generateCurrentDate();
         inProgress = false;
         paused = false;
     }
@@ -51,6 +71,30 @@ public class Training {
         return inProgress;
     }
 
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Route getRoute() {
+        return route;
+    }
+
+    public Date getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(Date finishDate) {
+        this.finishDate = finishDate;
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
+    }
+
     public void appendRoutePointToRoute(RoutePoint routePoint) {
         route.appendRoutePoint(routePoint);
     }
@@ -65,5 +109,9 @@ public class Training {
 
     public List<RoutePoint> getRoutePoints() {
         return route.getRoutePoints();
+    }
+
+    public List<SpeedPoint> getSpeedPoints() {
+        return route.getSpeedMeasurementPoints();
     }
 }

@@ -109,7 +109,7 @@ public class LocationListenerService extends Service implements LocationListener
         location.setTime(trainingTimer.getDurationTime());
         locationObserver.processLocationUpdate(location);
 
-        Log.i(TAG, "Aktualizuję lokalizację!");
+        Log.i(TAG, "Aktualizuję lokalizację! Lat: " + location.getLatitude() + ", Lon: " + location.getLongitude());
     }
 
     @Override
