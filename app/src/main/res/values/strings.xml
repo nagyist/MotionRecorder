@@ -4,6 +4,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Ustawienia</string>
     <string name="action_logout">Wyloguj</string>
+    <string name="action_delete">Usuń</string>
 
     <string name="username">Nazwa użytkownika</string>
     <string name="password">Hasło</string>
@@ -57,5 +58,11 @@
 
     <string name="start_training_date_label">Data rozpoczęcia</string>
     <string name="finish_training_date_label">Data zakończenia</string>
+    <string name="duration_label">Czas aktywności\ngg:mm:ss</string>
+    <string name="max_speed_label">Maks. prędkość\nm/s</string>
+    <string name="avg_speed_label">Śr. prędkość\nm/s</string>
+    <string name="title_activity_training_stats">Szczegóły treningu</string>
+    <string name="show_route_button_text">Pokaż trasę</string>
+    <string name="title_activity_route_map">Szczegóły trasy</string>
 
 </resources>

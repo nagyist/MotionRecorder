@@ -3,6 +3,7 @@ package put.iwm.android.motionrecorder.database.repository;
 import android.content.Context;
 
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 
 import java.util.ArrayList;
@@ -27,7 +28,6 @@ import put.iwm.android.motionrecorder.training.Training;
  * Created by Szymon on 2015-05-16.
  */
 public class ActiveAndroidTrainingRepository implements TrainingRepository {
-
 
     public ActiveAndroidTrainingRepository() {
     }
@@ -81,13 +81,17 @@ public class ActiveAndroidTrainingRepository implements TrainingRepository {
         trainingEntity.save();
     }
 
-    private long getNextTrainingId() {
-        return 1;
-    }
-
     @Override
     public Training findById(int id) {
-        return null;
+
+        TrainingEntity trainingEntity = new Select()
+                .from(TrainingEntity.class)
+                .where("id = ?", id)
+                .executeSingle();
+
+        Training training = new Training(trainingEntity);
+
+        return training;
     }
 
     @Override
@@ -104,6 +108,6 @@ public class ActiveAndroidTrainingRepository implements TrainingRepository {
 
     @Override
     public void deleteById(int id) {
-
+        new Delete().from(TrainingEntity.class).where("Id = ?", id).execute();
     }
 }

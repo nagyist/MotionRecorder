@@ -1,11 +1,20 @@
 package put.iwm.android.motionrecorder.fragments;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 /**
  * Created by Szymon on 2015-05-06.
  */
 public class TextGenerator {
+
+    private DateFormat dataFormat;
+
+    public TextGenerator() {
+        dataFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    }
 
     public String createTimerText(long time) {
 
@@ -42,6 +51,10 @@ public class TextGenerator {
     public String createSpeedText(double speed) {
         String speedText = String.format(Locale.ENGLISH, "%.2f", speed);
         return speedText;
+    }
+
+    public String createDateText(Date date) {
+        return dataFormat.format(date);
     }
 
 }

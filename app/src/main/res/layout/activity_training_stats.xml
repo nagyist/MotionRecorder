@@ -1,0 +1,220 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="put.iwm.android.motionrecorder.activities.TrainingStatsActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="10dp">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/start_training_date_label"
+                android:layout_margin="4dp"
+                android:layout_alignParentLeft="true" />
+
+            <TextView
+                android:id="@+id/training_start_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="2dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_alignParentRight="true"
+                android:background="?android:attr/activatedBackgroundIndicator"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:text="Text1" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/finish_training_date_label"
+                android:layout_margin="4dp"
+                android:layout_alignParentLeft="true" />
+
+            <TextView
+                android:id="@+id/training_finish_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="2dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_alignParentRight="true"
+                android:background="?android:attr/activatedBackgroundIndicator"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:text="Text1" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/duration_label"
+                android:layout_margin="4dp"
+                android:layout_alignParentLeft="true" />
+
+            <TextView
+                android:id="@+id/training_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="2dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_alignParentRight="true"
+                android:background="?android:attr/activatedBackgroundIndicator"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:text="Text1" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/distance_label"
+                android:layout_margin="4dp"
+                android:layout_alignParentLeft="true" />
+
+            <TextView
+                android:id="@+id/training_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="2dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_alignParentRight="true"
+                android:background="?android:attr/activatedBackgroundIndicator"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:text="Text1" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/max_speed_label"
+                android:layout_margin="4dp"
+                android:layout_alignParentLeft="true" />
+
+            <TextView
+                android:id="@+id/training_max_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="2dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_alignParentRight="true"
+                android:background="?android:attr/activatedBackgroundIndicator"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:text="Text1" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/avg_speed_label"
+                android:layout_margin="4dp"
+                android:layout_alignParentLeft="true" />
+
+            <TextView
+                android:id="@+id/training_avg_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItemSmall"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="2dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_alignParentRight="true"
+                android:background="?android:attr/activatedBackgroundIndicator"
+                android:minHeight="?android:attr/listPreferredItemHeightSmall"
+                android:text="Text1" />
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/show_route_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/show_route_button_text" />
+
+    </LinearLayout>
+
+</RelativeLayout>

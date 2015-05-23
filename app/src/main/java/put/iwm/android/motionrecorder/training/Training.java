@@ -32,6 +32,7 @@ public class Training {
         paused = trainingEntity.isPaused();
         startDate = trainingEntity.getStartDate();
         finishDate = trainingEntity.getFinishDate();
+        route = new Route(trainingEntity.getRouteEntity());
     }
 
     public void start() {
@@ -53,6 +54,26 @@ public class Training {
         finishDate = currentDateGenerator.generateCurrentDate();
         inProgress = false;
         paused = false;
+    }
+
+    public double getMaxSpeed() {
+        return route.getMaxSpeed();
+    }
+
+    public double getAvgSpeed() {
+        return route.getAvgSpeed();
+    }
+
+    //TODO
+    public long getDurationTime() {
+
+        List<RoutePoint> routePoints = route.getRoutePoints();
+        int lastPointIndex = routePoints.size() - 1;
+
+        if(lastPointIndex > 0)
+            return routePoints.get(lastPointIndex).getMoveTime();
+        else
+            return 0;
     }
 
     public long getId() {

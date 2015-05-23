@@ -261,5 +261,4 @@ public class MainActivity extends BaseActivity {
         sessionManager.logoutUser();
         redirectToAuthenticationActivity();
     }
-
 }

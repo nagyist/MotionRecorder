@@ -13,7 +13,7 @@ import put.iwm.android.motionrecorder.database.repository.TrainingRepository;
 /**
  * Created by Szymon on 2015-05-16.
  */
-@Module(includes = {ApplicationModule.class})
+@Module
 public class RepositoryModule {
 
     @Provides

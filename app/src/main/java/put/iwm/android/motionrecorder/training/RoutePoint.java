@@ -1,5 +1,7 @@
 package put.iwm.android.motionrecorder.training;
 
+import put.iwm.android.motionrecorder.database.entity.RoutePointEntity;
+
 /**
  * Created by Szymon on 2015-04-23.
  */
@@ -24,6 +26,17 @@ public class RoutePoint {
         this.moveDistance = moveDistance;
         this.moveTime = moveTime;
         this.serialNumber = serialNumber;
+    }
+
+    public RoutePoint(RoutePointEntity routePointEntity) {
+
+        id = routePointEntity.getId();
+        latitude = routePointEntity.getLatitude();
+        longitude = routePointEntity.getLongitude();
+        altitude = routePointEntity.getAltitude();
+        moveDistance = routePointEntity.getMoveDistance();
+        moveTime = routePointEntity.getMoveTime();
+        serialNumber = routePointEntity.getSerialNumber();
     }
 
     public long getId() {

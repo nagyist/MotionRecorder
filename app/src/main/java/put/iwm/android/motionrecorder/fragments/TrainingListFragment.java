@@ -2,6 +2,7 @@ package put.iwm.android.motionrecorder.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -17,6 +18,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import put.iwm.android.motionrecorder.R;
+import put.iwm.android.motionrecorder.activities.TrainingStatsActivity;
 import put.iwm.android.motionrecorder.adapters.TrainingAdapter;
 import put.iwm.android.motionrecorder.application.MotionRecorderApplication;
 import put.iwm.android.motionrecorder.database.repository.TrainingRepository;
@@ -52,10 +54,6 @@ public class TrainingListFragment extends Fragment {
         setupUIReferences();
         setupEventHandlers();
 
-        List<Training> trainings = trainingRepository.findAll();    //TODO
-        trainingAdapter = new TrainingAdapter(getActivity(), trainings);
-        trainingList.setAdapter(trainingAdapter);
-
         return rootView;
     }
 
@@ -68,13 +66,33 @@ public class TrainingListFragment extends Fragment {
         trainingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i(TAG, String.valueOf(id));
+
+                Training training = ((Training)parent.getItemAtPosition(position));
+                redirectToTrainingStatsActivity(training.getId());
             }
+
+            private void redirectToTrainingStatsActivity(long trainingId) {
+
+                Intent intent = new Intent(getActivity().getApplicationContext(), TrainingStatsActivity.class);
+
+                Bundle arguments = new Bundle();
+                arguments.putLong("trainingId", trainingId);
+
+                intent.putExtras(arguments);
+                startActivity(intent);
+            }
+
         });
     }
 
     @Override
     public void onResume() {
+
+        //TODO
+        List<Training> trainings = trainingRepository.findAll();
+        trainingAdapter = new TrainingAdapter(getActivity(), trainings);
+        trainingList.setAdapter(trainingAdapter);
+
         super.onResume();
     }
 
@@ -107,5 +125,4 @@ public class TrainingListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
-
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import put.iwm.android.motionrecorder.R;
+import put.iwm.android.motionrecorder.fragments.TextGenerator;
 import put.iwm.android.motionrecorder.fragments.ViewHolder;
 import put.iwm.android.motionrecorder.training.Training;
 
@@ -21,11 +22,12 @@ import put.iwm.android.motionrecorder.training.Training;
  */
 public class TrainingAdapter extends ArrayAdapter<Training> {
 
-    private DateFormat dataFormat;
+
+    private TextGenerator textGenerator;
 
     public TrainingAdapter(Context context, List<Training> trainings) {
         super(context, 0, trainings);
-        dataFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        textGenerator = new TextGenerator();
     }
 
     @Override
@@ -51,8 +53,8 @@ public class TrainingAdapter extends ArrayAdapter<Training> {
         }
 
         viewHolder.getIdTextView().setText("#" + String.valueOf(training.getId()));
-        viewHolder.getStartDateTextView().setText(dataFormat.format(training.getStartDate()));
-        viewHolder.getFinishDateTextView().setText(dataFormat.format(training.getFinishDate()));
+        viewHolder.getStartDateTextView().setText(textGenerator.createDateText(training.getStartDate()));
+        viewHolder.getFinishDateTextView().setText(textGenerator.createDateText((training.getFinishDate())));
 
         return convertView;
     }

@@ -5,6 +5,10 @@ import android.location.Location;
 import java.util.LinkedList;
 import java.util.List;
 
+import put.iwm.android.motionrecorder.database.entity.RouteEntity;
+import put.iwm.android.motionrecorder.database.entity.RoutePointEntity;
+import put.iwm.android.motionrecorder.database.entity.SpeedPointEntity;
+
 /**
  * Created by Szymon on 2015-05-14.
  */
@@ -22,6 +26,29 @@ public class Route {
     public Route() {
         routePoints = new LinkedList<>();
         speedMeasurementPoints = new LinkedList<>();
+    }
+
+    public Route(RouteEntity routeEntity) {
+
+        this();
+        id = routeEntity.getId();
+        initRoutePoints(routeEntity.getRoutePoints());
+        totalDistance = routeEntity.getTotalDistance();
+        partialDistance = routeEntity.getPartialDistance();
+        currentSpeed = routeEntity.getCurrentSpeed();
+        initSpeedPoints(routeEntity.getSpeedMeasurementPoints());
+        routePointSerialNumber = routeEntity.getRoutePointSerialNumber();
+        speedPointSerialNumber = routeEntity.getRoutePointSerialNumber();
+    }
+    
+    private void initRoutePoints(List<RoutePointEntity> routePointEntities) {
+        for(RoutePointEntity point : routePointEntities)
+            routePoints.add(new RoutePoint(point));
+    }
+
+    private void initSpeedPoints(List<SpeedPointEntity> speedPointEntities) {
+        for(SpeedPointEntity point : speedPointEntities)
+            speedMeasurementPoints.add(new SpeedPoint(point));
     }
 
     public void appendRoutePoint(RoutePoint routePoint) {
@@ -100,6 +127,41 @@ public class Route {
         routePoints.clear();
         totalDistance = 0;
         routePointSerialNumber = 0;
+    }
+
+    public double getMaxSpeed() {
+
+        double maxSpeed = 0;
+
+        for(SpeedPoint point : speedMeasurementPoints)
+            if(isGreater(point.getValue(), maxSpeed))
+                maxSpeed = point.getValue();
+
+        return maxSpeed;
+    }
+
+    private boolean isGreater(double firstValue, double secondValue) {
+        return firstValue > secondValue && isNotInfinity(firstValue);
+    }
+
+    private boolean isNotInfinity(double value) {
+        return value != Double.POSITIVE_INFINITY;
+    }
+
+    public double getAvgSpeed() {
+
+        if(speedMeasurementPoints.size() > 0) {
+
+            double avgSpeed = 0;
+
+            for (SpeedPoint point : speedMeasurementPoints)
+                if (isNotInfinity(point.getValue()))
+                    avgSpeed += point.getValue();
+
+            return avgSpeed / speedMeasurementPoints.size();
+        } else {
+            return 0;
+        }
     }
 
     public long getId() {

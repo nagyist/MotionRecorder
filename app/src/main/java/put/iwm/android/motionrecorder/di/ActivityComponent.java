@@ -10,7 +10,7 @@ import put.iwm.android.motionrecorder.base.BaseActivity;
  * Created by Szymon on 2015-05-09.
  */
 @Singleton
-@Component(modules = {AuthenticationModule.class, RegistrationModule.class})
+@Component(modules = {AuthenticationModule.class, RegistrationModule.class, RepositoryModule.class, TextGeneratorModule.class})
 public interface ActivityComponent extends ActivityDependencyGraph {
 
     static final class Initializer {
