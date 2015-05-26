@@ -72,6 +72,10 @@
             android:name=".activities.RouteMapActivity"
             android:label="@string/title_activity_route_map" >
         </activity>
+        <activity
+            android:name=".activities.SpeedGraphActivity"
+            android:label="@string/title_activity_speed_graph" >
+        </activity>
     </application>
 
 </manifest>

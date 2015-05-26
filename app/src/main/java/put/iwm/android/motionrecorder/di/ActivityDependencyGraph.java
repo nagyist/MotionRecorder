@@ -3,6 +3,7 @@ package put.iwm.android.motionrecorder.di;
 import put.iwm.android.motionrecorder.activities.AuthenticationActivity;
 import put.iwm.android.motionrecorder.activities.RegisterActivity;
 import put.iwm.android.motionrecorder.activities.RouteMapActivity;
+import put.iwm.android.motionrecorder.activities.SpeedGraphActivity;
 import put.iwm.android.motionrecorder.activities.TrainingStatsActivity;
 
 /**
@@ -14,4 +15,5 @@ public interface ActivityDependencyGraph {
     public void inject(RegisterActivity activity);
     public void inject(TrainingStatsActivity activity);
     public void inject(RouteMapActivity activity);
+    public void inject(SpeedGraphActivity activity);
 }

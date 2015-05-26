@@ -13,7 +13,7 @@ public class TextGenerator {
     private DateFormat dataFormat;
 
     public TextGenerator() {
-        dataFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        dataFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     }
 
     public String createTimerText(long time) {
@@ -28,11 +28,11 @@ public class TextGenerator {
     }
 
     private long extractHours(long time) {
-        return time / 1000 / 60 / 60 % 60;
+        return time / 1000 / 60 / 60;
     }
 
     private long extractMinutes(long time) {
-        return time / 1000 / 60;
+        return time / 1000 / 60 % 60;
     }
 
     private long extractSeconds(long time) {

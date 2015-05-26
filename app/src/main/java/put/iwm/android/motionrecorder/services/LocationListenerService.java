@@ -72,9 +72,9 @@ public class LocationListenerService extends Service implements LocationListener
     private void createLocationRequest() {
 
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(updateTime);
+        locationRequest.setInterval(updateTime  + 4000);
         locationRequest.setFastestInterval(updateTime);
-        locationRequest.setSmallestDisplacement(updateDistance);
+        //locationRequest.setSmallestDisplacement(updateDistance);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 

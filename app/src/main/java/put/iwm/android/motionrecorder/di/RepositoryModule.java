@@ -6,7 +6,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.realm.Realm;
 import put.iwm.android.motionrecorder.database.repository.ActiveAndroidTrainingRepository;
 import put.iwm.android.motionrecorder.database.repository.TrainingRepository;
 

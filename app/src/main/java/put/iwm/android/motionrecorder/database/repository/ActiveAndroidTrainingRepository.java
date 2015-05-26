@@ -12,9 +12,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
 
-import io.realm.Realm;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 import put.iwm.android.motionrecorder.database.entity.RouteEntity;
 import put.iwm.android.motionrecorder.database.entity.RoutePointEntity;
 import put.iwm.android.motionrecorder.database.entity.SpeedPointEntity;

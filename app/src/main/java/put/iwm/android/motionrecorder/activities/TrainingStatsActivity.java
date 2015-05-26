@@ -28,6 +28,7 @@ public class TrainingStatsActivity extends BaseActivity {
     private TextView maxSpeedTextView;
     private TextView avgSpeedTextView;
     private Button showRouteButton;
+    private Button showSpeedGraphButton;
     @Inject TextGenerator textGenerator;
     @Inject TrainingRepository trainingRepository;
 
@@ -63,6 +64,7 @@ public class TrainingStatsActivity extends BaseActivity {
         maxSpeedTextView = (TextView) findViewById(R.id.training_max_speed);
         avgSpeedTextView = (TextView) findViewById(R.id.training_avg_speed);
         showRouteButton = (Button) findViewById(R.id.show_route_button);
+        showSpeedGraphButton = (Button) findViewById(R.id.show_speed_graph_button);
     }
 
     private void setupEventHandlers() {
@@ -76,6 +78,24 @@ public class TrainingStatsActivity extends BaseActivity {
             private void redirectToRouteMapActivity(long trainingId) {
 
                 Intent intent = new Intent(getApplicationContext(), RouteMapActivity.class);
+
+                Bundle arguments = new Bundle();
+                arguments.putLong("trainingId", trainingId);
+
+                intent.putExtras(arguments);
+                startActivity(intent);
+            }
+        });
+
+        showSpeedGraphButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirectToSpeedGraphActivity(training.getId());
+            }
+
+            private void redirectToSpeedGraphActivity(long trainingId) {
+
+                Intent intent = new Intent(getApplicationContext(), SpeedGraphActivity.class);
 
                 Bundle arguments = new Bundle();
                 arguments.putLong("trainingId", trainingId);

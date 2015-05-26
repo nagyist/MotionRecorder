@@ -5,8 +5,6 @@ import com.activeandroid.annotation.Table;
 
 import java.util.List;
 
-import io.realm.RealmList;
-import io.realm.RealmObject;
 import put.iwm.android.motionrecorder.database.MotionRecorderDatabase;
 import put.iwm.android.motionrecorder.training.RoutePoint;
 

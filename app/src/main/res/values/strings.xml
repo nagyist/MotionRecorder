@@ -63,6 +63,8 @@
     <string name="avg_speed_label">Śr. prędkość\nm/s</string>
     <string name="title_activity_training_stats">Szczegóły treningu</string>
     <string name="show_route_button_text">Pokaż trasę</string>
+    <string name="show_speed_graph_button_text">Pokaż wykres prędkości</string>
     <string name="title_activity_route_map">Szczegóły trasy</string>
+    <string name="title_activity_speed_graph">Wykres prędkości</string>
 
 </resources>

@@ -80,7 +80,7 @@ public class Route {
     }
 
     private boolean canUpdate() {
-        return getNumberOfRoutePoints() > 2;
+        return getNumberOfRoutePoints() >= 2;
     }
 
     private double calculatePartialDistance() {
@@ -151,17 +151,34 @@ public class Route {
     public double getAvgSpeed() {
 
         if(speedMeasurementPoints.size() > 0) {
-
-            double avgSpeed = 0;
-
-            for (SpeedPoint point : speedMeasurementPoints)
-                if (isNotInfinity(point.getValue()))
-                    avgSpeed += point.getValue();
-
-            return avgSpeed / speedMeasurementPoints.size();
+            return calculateAvgSpeed();
         } else {
             return 0;
         }
+    }
+
+    private double calculateAvgSpeed() {
+
+        double avgSpeed = 0;
+        double numerator = 0;
+        double denominator = 0;
+        int i = 0;
+
+        for(SpeedPoint point : speedMeasurementPoints) {
+
+            if(isNotInfinity(point.getValue())) {
+                long partialMoveTime = routePoints.get(i + 1).getMoveTime() - routePoints.get(i).getMoveTime();
+                numerator += point.getValue() * partialMoveTime;
+                denominator += partialMoveTime;
+            }
+
+            i++;
+        }
+
+        if(denominator > 0)
+            avgSpeed = numerator / denominator;
+
+        return avgSpeed;
     }
 
     public long getId() {
