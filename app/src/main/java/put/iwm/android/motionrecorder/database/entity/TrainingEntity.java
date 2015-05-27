@@ -6,8 +6,6 @@ import com.activeandroid.annotation.Table;
 
 import java.sql.Date;
 
-import put.iwm.android.motionrecorder.database.MotionRecorderDatabase;
-import put.iwm.android.motionrecorder.training.Route;
 import put.iwm.android.motionrecorder.training.Training;
 
 /**

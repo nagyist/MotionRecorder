@@ -10,9 +10,9 @@ import put.iwm.android.motionrecorder.training.Training;
 public interface TrainingRepository {
 
     public void save(Training training);
-    public Training findById(int id);
+    public Training findById(long id);
     public List<Training> findAll();
-    public void deleteById(int id);
+    public void deleteById(long id);
 
 
 }

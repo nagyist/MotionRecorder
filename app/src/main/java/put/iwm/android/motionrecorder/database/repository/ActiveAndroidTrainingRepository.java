@@ -1,16 +1,11 @@
 package put.iwm.android.motionrecorder.database.repository;
 
-import android.content.Context;
-
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.inject.Inject;
 
 import put.iwm.android.motionrecorder.database.entity.RouteEntity;
 import put.iwm.android.motionrecorder.database.entity.RoutePointEntity;
@@ -79,7 +74,7 @@ public class ActiveAndroidTrainingRepository implements TrainingRepository {
     }
 
     @Override
-    public Training findById(int id) {
+    public Training findById(long id) {
 
         TrainingEntity trainingEntity = new Select()
                 .from(TrainingEntity.class)
@@ -104,7 +99,7 @@ public class ActiveAndroidTrainingRepository implements TrainingRepository {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(long id) {
         new Delete().from(TrainingEntity.class).where("Id = ?", id).execute();
     }
 }

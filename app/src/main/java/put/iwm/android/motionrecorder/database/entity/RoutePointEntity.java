@@ -1,11 +1,9 @@
 package put.iwm.android.motionrecorder.database.entity;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-import java.util.List;
-
-import put.iwm.android.motionrecorder.database.MotionRecorderDatabase;
 import put.iwm.android.motionrecorder.training.RoutePoint;
 
 /**

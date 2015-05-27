@@ -7,13 +7,11 @@ import android.view.MenuItem;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.LimitLine;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ValueFormatter;
-import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,16 +21,15 @@ import javax.inject.Inject;
 
 import put.iwm.android.motionrecorder.R;
 import put.iwm.android.motionrecorder.base.BaseActivity;
-import put.iwm.android.motionrecorder.database.repository.TrainingRepository;
+import put.iwm.android.motionrecorder.di.SpeedGraphActivityComponent;
+import put.iwm.android.motionrecorder.presenters.SpeedGraphPresenter;
 import put.iwm.android.motionrecorder.training.SpeedPoint;
-import put.iwm.android.motionrecorder.training.Training;
 import put.iwm.android.motionrecorder.views.SpeedGraphView;
 
 public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
 
     private LineChart speedGraph;
-    private Training training;
-    @Inject TrainingRepository trainingRepository;
+    @Inject SpeedGraphPresenter speedGraphPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,23 +37,33 @@ public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speed_graph);
 
-        getActivityComponent().inject(this);
+        getSpeedGraphActivityComponent().inject(this);
 
         setupUIReferences();
-        setupTraining();
         setupSpeedGraph();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        long trainingId = getTrainingId();
+        speedGraphPresenter.onResume(trainingId);
+    }
+
+    private long getTrainingId() {
+        return getIntent().getExtras().getLong("trainingId");
     }
 
     private void setupUIReferences() {
         speedGraph = (LineChart) findViewById(R.id.speed_graph);
     }
 
-    private void setupTraining() {
-
-        Bundle arguments = getIntent().getExtras();
-        long trainingId = arguments.getLong("trainingId");
-
-        training = trainingRepository.findById((int)trainingId);
+    @Override
+    public void setTrainingSpeedData(HashMap<String, Object> model) {
+        List<SpeedPoint> speedPoints = (List<SpeedPoint>) model.get("speedPoints");
+        double maxSpeed = (double) model.get("maxSpeed");
+        double avgSpeed = (double) model.get("avgSpeed");
+        setSpeedGraphData(speedPoints, (float) maxSpeed, (float) avgSpeed);
     }
 
     private void setupSpeedGraph() {
@@ -71,14 +78,11 @@ public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
         speedGraph.setPinchZoom(true);
         speedGraph.setHighlightIndicatorEnabled(false);
 
-        float maxSpeed = (float)training.getMaxSpeed();
-
         YAxis leftAxis = speedGraph.getAxisLeft();
         leftAxis.removeAllLimitLines();
-        leftAxis.setAxisMaxValue(maxSpeed + 0.1f * maxSpeed);
-        leftAxis.setAxisMinValue(-maxSpeed * 0.1f);
         leftAxis.setStartAtZero(false);
         leftAxis.enableGridDashedLine(10, 10, 0);
+        leftAxis.setDrawLimitLinesBehindData(true);
         leftAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
@@ -87,22 +91,12 @@ public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
             }
         });
 
-        leftAxis.setDrawLimitLinesBehindData(true);
-
         speedGraph.getAxisRight().setEnabled(false);
-
-        List<SpeedPoint> speedPoints = training.getSpeedPoints();
-
-        setSpeedGraphData(speedPoints);
-
-        speedGraph.invalidate();
     }
 
-    private void setSpeedGraphData(List<SpeedPoint> speedPoints) {
+    private void setSpeedGraphData(List<SpeedPoint> speedPoints, float maxSpeed, float avgSpeed) {
 
-        if(speedPoints.size() > 0) {
-
-            float maxSpeed = (float)training.getMaxSpeed();
+        if(!speedPoints.isEmpty()) {
 
             LimitLine topLimit = new LimitLine(maxSpeed, "Prędkość maksymalna");
             topLimit.setLineWidth(2);
@@ -116,13 +110,15 @@ public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
             bottomLimit.setLabelPosition(LimitLine.LimitLabelPosition.POS_RIGHT);
             bottomLimit.setTextSize(10);
 
-            LimitLine avgLimit = new LimitLine((float)training.getAvgSpeed());
+            LimitLine avgLimit = new LimitLine(avgSpeed);
             avgLimit.setLineWidth(1);
             avgLimit.setTextSize(10);
             avgLimit.setLabelPosition(LimitLine.LimitLabelPosition.POS_LEFT);
             avgLimit.setLineColor(Color.DKGRAY);
 
             YAxis leftAxis = speedGraph.getAxisLeft();
+            leftAxis.setAxisMaxValue(maxSpeed + 0.1f * maxSpeed);
+            leftAxis.setAxisMinValue(-maxSpeed * 0.1f);
             leftAxis.removeAllLimitLines();
             leftAxis.addLimitLine(avgLimit);
             leftAxis.addLimitLine(topLimit);
@@ -132,22 +128,20 @@ public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
         ArrayList<String> xValues = new ArrayList<>();
         ArrayList<Entry> yValues = new ArrayList<>();
 
-        int i = 0;
         for(SpeedPoint point : speedPoints) {
             xValues.add(String.valueOf(point.getSerialNumber()));
-            yValues.add(new Entry((float) point.getValue(), i++));
+            yValues.add(new Entry((float) point.getValue(), point.getSerialNumber() - 1));
         }
 
         LineDataSet speedDataSet = new LineDataSet(yValues, "Prędkość");
         speedDataSet.setFillAlpha(110);
         speedDataSet.setFillColor(Color.RED);
-
         speedDataSet.setColor(Color.BLACK);
         speedDataSet.setCircleColor(Color.BLACK);
-        speedDataSet.setLineWidth(1f);
-        speedDataSet.setCircleSize(2f);
+        speedDataSet.setLineWidth(1);
+        speedDataSet.setCircleSize(2);
         speedDataSet.setDrawCircleHole(true);
-        speedDataSet.setValueTextSize(0f);
+        speedDataSet.setValueTextSize(0);
         speedDataSet.setFillAlpha(65);
         speedDataSet.setFillColor(Color.BLACK);
         speedDataSet.setDrawFilled(true);
@@ -158,6 +152,7 @@ public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
         LineData data = new LineData(xValues, dataSets);
 
         speedGraph.setData(data);
+        speedGraph.invalidate();
     }
 
     @Override
@@ -175,15 +170,13 @@ public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
             return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void setGraphData(HashMap<String, Object> model) {
-
+    private SpeedGraphActivityComponent getSpeedGraphActivityComponent() {
+        return SpeedGraphActivityComponent.Initializer.init(this);
     }
 }

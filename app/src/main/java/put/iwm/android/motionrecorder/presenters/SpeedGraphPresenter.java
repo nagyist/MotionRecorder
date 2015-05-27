@@ -5,5 +5,5 @@ package put.iwm.android.motionrecorder.presenters;
  */
 public interface SpeedGraphPresenter {
 
-    public void onResume();
+    public void onResume(long trainingId);
 }

@@ -5,5 +5,5 @@ package put.iwm.android.motionrecorder.interactors;
  */
 public interface SpeedGraphInteractor {
 
-    public void getTrainingSpeedData(int trainingId, OnGetTrainingSpeedDataFinishedListener listener);
+    public void getTrainingSpeedData(long trainingId, OnGetTrainingSpeedDataFinishedListener listener);
 }

@@ -15,5 +15,4 @@ public interface ActivityDependencyGraph {
     public void inject(RegisterActivity activity);
     public void inject(TrainingStatsActivity activity);
     public void inject(RouteMapActivity activity);
-    public void inject(SpeedGraphActivity activity);
 }
