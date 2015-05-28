@@ -13,12 +13,11 @@ import put.iwm.android.motionrecorder.views.SpeedGraphView;
  * Created by Szymon on 2015-05-26.
  */
 @Module(includes = {SpeedGraphActivityModule.class, InteractorModule.class})
-public class PresenterModule {
+public class SpeedGraphPresenterModule {
 
     @Provides
     @Singleton
     public SpeedGraphPresenter provideSpeedGraphPresenter(SpeedGraphView view, SpeedGraphInteractor interactor) {
         return new SpeedGraphPresenterImpl(view, interactor);
     }
-
 }

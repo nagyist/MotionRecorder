@@ -74,12 +74,10 @@ public class LocationListenerService extends Service implements LocationListener
         locationRequest = new LocationRequest();
         locationRequest.setInterval(updateTime  + 4000);
         locationRequest.setFastestInterval(updateTime);
-        //locationRequest.setSmallestDisplacement(updateDistance);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     private void connectGoogleApiClient() {
-
         googleApiClient.connect();
     }
 
@@ -94,21 +92,17 @@ public class LocationListenerService extends Service implements LocationListener
     }
 
     private void startLocationUpdates() {
-
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-
         processLocationUpdate(location);
     }
 
     private void processLocationUpdate(Location location) {
-
         location.setTime(trainingTimer.getDurationTime());
         locationObserver.processLocationUpdate(location);
-
         Log.i(TAG, "Aktualizuję lokalizację! Lat: " + location.getLatitude() + ", Lon: " + location.getLongitude());
     }
 

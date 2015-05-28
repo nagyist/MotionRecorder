@@ -6,8 +6,6 @@ import android.os.Bundle;
 
 import put.iwm.android.motionrecorder.activities.AuthenticationActivity;
 import put.iwm.android.motionrecorder.di.ActivityComponent;
-import put.iwm.android.motionrecorder.di.ActivityModule;
-import put.iwm.android.motionrecorder.di.DaggerActivityComponent;
 import put.iwm.android.motionrecorder.session.UserSessionManager;
 import put.iwm.android.motionrecorder.session.UserSessionManagerImpl;
 

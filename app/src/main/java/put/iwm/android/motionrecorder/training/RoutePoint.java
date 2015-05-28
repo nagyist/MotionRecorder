@@ -14,18 +14,22 @@ public class RoutePoint {
     private double moveDistance;
     private long moveTime;
     private int serialNumber;
+    private boolean pauseMarker;
+    private boolean resumeMarker;
 
     public RoutePoint() {
     }
 
     public RoutePoint(double latitude, double longitude, double altitude, double moveDistance,
-                      long moveTime, int serialNumber) {
+                      long moveTime, int serialNumber, boolean pauseMarker, boolean resumeMarker) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.altitude = altitude;
         this.moveDistance = moveDistance;
         this.moveTime = moveTime;
         this.serialNumber = serialNumber;
+        this.pauseMarker = pauseMarker;
+        this.resumeMarker = resumeMarker;
     }
 
     public RoutePoint(RoutePointEntity routePointEntity) {
@@ -37,6 +41,8 @@ public class RoutePoint {
         moveDistance = routePointEntity.getMoveDistance();
         moveTime = routePointEntity.getMoveTime();
         serialNumber = routePointEntity.getSerialNumber();
+        pauseMarker = routePointEntity.isPauseMarker();
+        resumeMarker = routePointEntity.isResumeMarker();
     }
 
     public long getId() {
@@ -93,5 +99,21 @@ public class RoutePoint {
 
     public void setSerialNumber(int serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    public boolean isPauseMarker() {
+        return pauseMarker;
+    }
+
+    public void setPauseMarker(boolean pauseMarker) {
+        this.pauseMarker = pauseMarker;
+    }
+
+    public boolean isResumeMarker() {
+        return resumeMarker;
+    }
+
+    public void setResumeMarker(boolean resumeMarker) {
+        this.resumeMarker = resumeMarker;
     }
 }

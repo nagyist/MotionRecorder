@@ -10,21 +10,24 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:gravity="center_vertical"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="1dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_alignParentRight="true"
         android:background="?android:attr/activatedBackgroundIndicator"
-        android:text="Text1" />
+        android:text="Trening #1" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="1dp">
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,17 +42,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="2dp"
+            android:gravity="right"
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_alignParentRight="true"
             android:background="?android:attr/activatedBackgroundIndicator"
             android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:text="Text1" />
+            android:text="01.01.1970\n00:00:00" />
 
     </RelativeLayout>
 
@@ -57,7 +56,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="1dp">
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -72,17 +72,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceListItemSmall"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="2dp"
+            android:gravity="right"
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_alignParentRight="true"
             android:background="?android:attr/activatedBackgroundIndicator"
             android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:text="Text1" />
+            android:text="01.01.1970\n00:00:00" />
 
     </RelativeLayout>
 

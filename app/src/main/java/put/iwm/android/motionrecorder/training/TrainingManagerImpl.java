@@ -23,12 +23,13 @@ public class TrainingManagerImpl implements TrainingManager, LocationObserver {
     private RouteObserver routeObserver;
     private TrainingRepository trainingRepository;
 
+    private boolean trainingResumed = false;
+
     public TrainingManagerImpl() {
         currentTraining = new Training();
     }
 
     public TrainingManagerImpl(ServiceManager serviceManager, TrainingTimer trainingTimer, TrainingRepository trainingRepository) {
-
         this();
         this.serviceManager = serviceManager;
         this.trainingTimer = trainingTimer;
@@ -48,7 +49,6 @@ public class TrainingManagerImpl implements TrainingManager, LocationObserver {
     public void pauseTraining() {
 
         currentTraining.pause();
-        serviceManager.stopLocationListenerService();
         trainingTimer.pause();
     }
 
@@ -56,17 +56,19 @@ public class TrainingManagerImpl implements TrainingManager, LocationObserver {
     public void resumeTraining() {
 
         currentTraining.resume();
-        serviceManager.startLocationListenerService();
         trainingTimer.resume();
+        serviceManager.startLocationListenerService();
+        trainingResumed = true;
     }
 
     @Override
-    public void finishTraining() {
+    public void finishTraining(boolean saveTraining) {
 
         currentTraining.finish();
-        serviceManager.stopLocationListenerService();
         trainingTimer.stop();
-        trainingRepository.save(currentTraining);
+        serviceManager.stopLocationListenerService();
+        if(saveTraining)
+            trainingRepository.save(currentTraining);
     }
 
     @Override
@@ -79,11 +81,26 @@ public class TrainingManagerImpl implements TrainingManager, LocationObserver {
 
     private void updateRoute(Location location) {
 
+        boolean pauseMarker = false;
+        boolean resumeMarker = false;
+
+        if(currentTraining.isPaused()) {
+            serviceManager.stopLocationListenerService();
+            pauseMarker = true;
+        }
+
+        if(trainingResumed) {
+            resumeMarker = true;
+            trainingResumed = false;
+        }
+
         RoutePoint routePoint = new RoutePoint();
         routePoint.setLatitude(location.getLatitude());
         routePoint.setLongitude(location.getLongitude());
         routePoint.setAltitude(location.getAltitude());
         routePoint.setMoveTime(location.getTime());
+        routePoint.setPauseMarker(pauseMarker);
+        routePoint.setResumeMarker(resumeMarker);
         currentTraining.appendRoutePointToRoute(routePoint);
     }
 

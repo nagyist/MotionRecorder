@@ -129,8 +129,11 @@ public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
         ArrayList<Entry> yValues = new ArrayList<>();
 
         for(SpeedPoint point : speedPoints) {
-            xValues.add(String.valueOf(point.getSerialNumber()));
-            yValues.add(new Entry((float) point.getValue(), point.getSerialNumber() - 1));
+
+            if(point.getValue() != Double.POSITIVE_INFINITY) {
+                xValues.add(String.valueOf(point.getSerialNumber()));
+                yValues.add(new Entry((float) point.getValue(), point.getSerialNumber() - 1));
+            }
         }
 
         LineDataSet speedDataSet = new LineDataSet(yValues, "Prędkość");
@@ -173,7 +176,15 @@ public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
         if (id == R.id.action_settings)
             return true;
 
+        if(id == R.id.action_logout)
+            logout();
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logout() {
+        sessionManager.logoutUser();
+        redirectToAuthenticationActivity();
     }
 
     private SpeedGraphActivityComponent getSpeedGraphActivityComponent() {

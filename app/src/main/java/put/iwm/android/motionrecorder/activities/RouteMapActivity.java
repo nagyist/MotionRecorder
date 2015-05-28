@@ -1,5 +1,6 @@
 package put.iwm.android.motionrecorder.activities;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -14,9 +15,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.ui.IconGenerator;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -89,8 +92,15 @@ public class RouteMapActivity extends BaseActivity {
         if(!routePoints.isEmpty()) {
 
             List<LatLng> coordinates = new LinkedList<>();
-            for (RoutePoint routePoint : routePoints)
+            List<RoutePoint> pauseResumePoints = new LinkedList<>();
+
+            for(RoutePoint routePoint : routePoints) {
+
                 coordinates.add(new LatLng(routePoint.getLatitude(), routePoint.getLongitude()));
+
+                if(routePoint.isPauseMarker() || routePoint.isResumeMarker())
+                    pauseResumePoints.add(routePoint);
+            }
 
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coordinates.get(coordinates.size() - 1), 18.2f);
             map.animateCamera(cameraUpdate);
@@ -110,8 +120,33 @@ public class RouteMapActivity extends BaseActivity {
                     coordinates.get(coordinates.size() - 1).latitude,
                     coordinates.get(coordinates.size() - 1).longitude);
 
-            map.addMarker(new MarkerOptions().position(firstCoordinate).title("Początek"));
-            map.addMarker(new MarkerOptions().position(lastCoordinate).title("Koniec"));
+            IconGenerator iconGenerator = new IconGenerator(getApplicationContext());
+            iconGenerator.setContentRotation(90);
+
+            Bitmap startIcon = iconGenerator.makeIcon("Początek");
+            Bitmap finishIcon = iconGenerator.makeIcon("Koniec");
+
+            map.addMarker(new MarkerOptions().position(firstCoordinate).icon(BitmapDescriptorFactory.fromBitmap(startIcon)));
+            map.addMarker(new MarkerOptions().position(lastCoordinate).icon(BitmapDescriptorFactory.fromBitmap(finishIcon)));
+
+            int pauseResumeCounter = 1;
+            for(RoutePoint point : pauseResumePoints) {
+
+                LatLng coordinate = new LatLng(point.getLatitude(), point.getLongitude());
+
+                if(point.isPauseMarker()) {
+
+                    iconGenerator.setStyle(IconGenerator.STYLE_ORANGE);
+                    Bitmap pauseIcon = iconGenerator.makeIcon("Wstrzymanie #" + pauseResumeCounter);
+                    map.addMarker(new MarkerOptions().position(coordinate).icon(BitmapDescriptorFactory.fromBitmap(pauseIcon)));
+                } else if(point.isResumeMarker()) {
+
+                    iconGenerator.setStyle(IconGenerator.STYLE_GREEN);
+                    Bitmap resumeIcon = iconGenerator.makeIcon("Wznowienie #" + pauseResumeCounter);
+                    map.addMarker(new MarkerOptions().position(coordinate).icon(BitmapDescriptorFactory.fromBitmap(resumeIcon)));
+                    pauseResumeCounter++;
+                }
+            }
         }
     }
 
@@ -127,7 +162,7 @@ public class RouteMapActivity extends BaseActivity {
 
         int id = item.getItemId();
 
-        if (id == R.id.action_settings)
+        if(id == R.id.action_settings)
             return true;
 
         if(id == R.id.action_logout)

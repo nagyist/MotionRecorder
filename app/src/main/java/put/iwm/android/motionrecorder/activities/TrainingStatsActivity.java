@@ -1,7 +1,7 @@
 package put.iwm.android.motionrecorder.activities;
 
+import android.app.DialogFragment;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,17 +10,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
+
 import javax.inject.Inject;
 
 import put.iwm.android.motionrecorder.R;
 import put.iwm.android.motionrecorder.base.BaseActivity;
-import put.iwm.android.motionrecorder.database.repository.TrainingRepository;
-import put.iwm.android.motionrecorder.fragments.TextGenerator;
-import put.iwm.android.motionrecorder.training.Training;
+import put.iwm.android.motionrecorder.di.TrainingStatsActivityComponent;
+import put.iwm.android.motionrecorder.fragments.ConfirmDialogFragment;
+import put.iwm.android.motionrecorder.presenters.TrainingPresenter;
+import put.iwm.android.motionrecorder.views.TrainingStatsView;
 
-public class TrainingStatsActivity extends BaseActivity {
+public class TrainingStatsActivity extends BaseActivity implements TrainingStatsView, ConfirmDialogFragment.NoticeDialogListener {
 
-    private Training training;
     private TextView startDateTextView;
     private TextView finishDateTextView;
     private TextView durationTextView;
@@ -29,30 +31,41 @@ public class TrainingStatsActivity extends BaseActivity {
     private TextView avgSpeedTextView;
     private Button showRouteButton;
     private Button showSpeedGraphButton;
-    @Inject TextGenerator textGenerator;
-    @Inject TrainingRepository trainingRepository;
+    private ConfirmDialogFragment confirmDialog;
+    @Inject TrainingPresenter trainingPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        getActivityComponent().inject(this);
+        getTrainingStatsActivityComponent().inject(this);
 
         setContentView(R.layout.activity_training_stats);
 
         setupUIReferences();
         setupEventHandlers();
-        setupTraining();
-        fillUI();
     }
 
-    private void setupTraining() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        trainingPresenter.onResume(getTrainingId());
+    }
 
-        Bundle arguments = getIntent().getExtras();
-        long trainingId = arguments.getLong("trainingId");
+    private long getTrainingId() {
+        return getIntent().getExtras().getLong("trainingId");
+    }
 
-        training = trainingRepository.findById((int)trainingId);
+    @Override
+    public void setTrainingStatsData(HashMap<String, String> model) {
+
+        startDateTextView.setText(model.get("startDate"));
+        finishDateTextView.setText(model.get("finishDate"));
+        durationTextView.setText(model.get("duration"));
+        distanceTextView.setText(model.get("distance"));
+        maxSpeedTextView.setText(model.get("maxSpeed"));
+        avgSpeedTextView.setText(model.get("avgSpeed"));
     }
 
     private void setupUIReferences() {
@@ -72,7 +85,7 @@ public class TrainingStatsActivity extends BaseActivity {
         showRouteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectToRouteMapActivity(training.getId());
+                redirectToRouteMapActivity(getTrainingId());
             }
 
             private void redirectToRouteMapActivity(long trainingId) {
@@ -90,7 +103,7 @@ public class TrainingStatsActivity extends BaseActivity {
         showSpeedGraphButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                redirectToSpeedGraphActivity(training.getId());
+                redirectToSpeedGraphActivity(getTrainingId());
             }
 
             private void redirectToSpeedGraphActivity(long trainingId) {
@@ -104,16 +117,6 @@ public class TrainingStatsActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
-    }
-
-    private void fillUI() {
-
-        startDateTextView.setText(textGenerator.createDateText(training.getStartDate()));
-        finishDateTextView.setText(textGenerator.createDateText(training.getFinishDate()));
-        durationTextView.setText(textGenerator.createTimerText(training.getDurationTime()));
-        distanceTextView.setText(textGenerator.createDistanceText(training.getTotalDistance()));
-        maxSpeedTextView.setText(textGenerator.createSpeedText(training.getMaxSpeed()));
-        avgSpeedTextView.setText(textGenerator.createSpeedText(training.getAvgSpeed()));
     }
 
     @Override
@@ -146,11 +149,31 @@ public class TrainingStatsActivity extends BaseActivity {
     }
 
     private void showDeleteConfirmDialog() {
+        confirmDialog = new ConfirmDialogFragment("Czy chcesz usunąć ten trening?", "Tak", "Nie");
+        confirmDialog.show(getFragmentManager(), "Delete training confirm dialog");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
         deleteTraining();
     }
 
     private void deleteTraining() {
-        trainingRepository.deleteById((int)training.getId());
+        trainingPresenter.deleteTraining(getTrainingId());
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onDeleteTrainingSuccess() {
+        Toast.makeText(this, "Trening został pomyślnie usunięty", Toast.LENGTH_LONG).show();
         finish();
+    }
+
+    private TrainingStatsActivityComponent getTrainingStatsActivityComponent() {
+        return TrainingStatsActivityComponent.Initializer.init(this);
     }
 }

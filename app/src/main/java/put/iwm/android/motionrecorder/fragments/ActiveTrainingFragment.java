@@ -1,6 +1,7 @@
 package put.iwm.android.motionrecorder.fragments;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -22,7 +23,7 @@ import put.iwm.android.motionrecorder.training.TrainingManager;
 import put.iwm.android.motionrecorder.contracts.TrainingObserver;
 import put.iwm.android.motionrecorder.training.TrainingTimer;
 
-public class ActiveTrainingFragment extends Fragment implements TimerObserver, TrainingObserver {
+public class ActiveTrainingFragment extends Fragment implements TimerObserver, TrainingObserver, ConfirmDialogFragment.NoticeDialogListener {
 
     private static final String TAG = ActiveTrainingFragment.class.toString();
     private View rootView;
@@ -33,6 +34,7 @@ public class ActiveTrainingFragment extends Fragment implements TimerObserver, T
     private Button finishTrainingButton;
     private Button resumeTrainingButton;
     private Button pauseTrainingButton;
+    private ConfirmDialogFragment confirmDialog;
 
     @Inject TextGenerator textGenerator;
     @Inject TrainingManager trainingManager;
@@ -89,7 +91,7 @@ public class ActiveTrainingFragment extends Fragment implements TimerObserver, T
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "Zakończono trening!");
-                finishTrainingButton();
+                finishTrainingButtonClicked();
             }
         });
 
@@ -124,9 +126,23 @@ public class ActiveTrainingFragment extends Fragment implements TimerObserver, T
         trainingSpeedTextView.setText(R.string.speed_init_value);
     }
 
-    private void finishTrainingButton() {
+    private void finishTrainingButtonClicked() {
+        confirmDialog = new ConfirmDialogFragment("Czy chcesz zachować zakończony trening?", "Tak", "Nie", this);
+        confirmDialog.show(getFragmentManager(), "Save training confirm dialog");
+    }
 
-        trainingManager.finishTraining();
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        finishTraining(true);
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        finishTraining(false);
+    }
+
+    private void finishTraining(boolean saveTraining) {
+        trainingManager.finishTraining(saveTraining);
         updateUI();
     }
 

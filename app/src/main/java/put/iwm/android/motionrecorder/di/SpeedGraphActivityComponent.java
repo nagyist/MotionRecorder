@@ -9,7 +9,7 @@ import put.iwm.android.motionrecorder.activities.SpeedGraphActivity;
  * Created by Szymon on 2015-05-26.
  */
 @Singleton
-@Component(modules = {SpeedGraphActivityModule.class, PresenterModule.class})
+@Component(modules = {SpeedGraphActivityModule.class, SpeedGraphPresenterModule.class})
 public interface SpeedGraphActivityComponent extends SpeedGraphActivityDependencyGraph {
 
     static final class Initializer {
@@ -23,5 +23,4 @@ public interface SpeedGraphActivityComponent extends SpeedGraphActivityDependenc
                     .build();
         }
     }
-
 }

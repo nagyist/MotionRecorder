@@ -24,6 +24,10 @@ public class RoutePointEntity extends Model {
     private long moveTime;
     @Column
     private int serialNumber;
+    @Column
+    private boolean pauseMarker;
+    @Column
+    private boolean resumeMarker;
     @Column(name = "route_id")
     private RouteEntity routeEntity;
 
@@ -40,6 +44,8 @@ public class RoutePointEntity extends Model {
         moveDistance = routePoint.getMoveDistance();
         moveTime = routePoint.getMoveTime();
         serialNumber = routePoint.getSerialNumber();
+        pauseMarker = routePoint.isPauseMarker();
+        resumeMarker = routePoint.isResumeMarker();
     }
 
     public double getLatitude() {
@@ -96,5 +102,21 @@ public class RoutePointEntity extends Model {
 
     public void setRouteEntity(RouteEntity routeEntity) {
         this.routeEntity = routeEntity;
+    }
+
+    public boolean isPauseMarker() {
+        return pauseMarker;
+    }
+
+    public void setPauseMarker(boolean pauseMarker) {
+        this.pauseMarker = pauseMarker;
+    }
+
+    public boolean isResumeMarker() {
+        return resumeMarker;
+    }
+
+    public void setResumeMarker(boolean resumeMarker) {
+        this.resumeMarker = resumeMarker;
     }
 }

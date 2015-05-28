@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import put.iwm.android.motionrecorder.R;
@@ -21,7 +18,6 @@ import put.iwm.android.motionrecorder.training.Training;
  * Created by Szymon on 2015-05-20.
  */
 public class TrainingAdapter extends ArrayAdapter<Training> {
-
 
     private TextGenerator textGenerator;
 
@@ -37,8 +33,9 @@ public class TrainingAdapter extends ArrayAdapter<Training> {
 
         ViewHolder viewHolder;
 
-        //TODO zmienić na funkcje
         if(convertView == null) {
+
+            //viewHolder = buildViewHolder(training, convertView, parent);
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.training_list_item, parent, false);
@@ -48,9 +45,8 @@ public class TrainingAdapter extends ArrayAdapter<Training> {
             viewHolder.setFinishDateTextView((TextView) convertView.findViewById(R.id.training_finish_date));
             convertView.setTag(viewHolder);
         }
-        else {
+        else
             viewHolder = (ViewHolder) convertView.getTag();
-        }
 
         viewHolder.getIdTextView().setText("#" + String.valueOf(training.getId()));
         viewHolder.getStartDateTextView().setText(textGenerator.createDateText(training.getStartDate()));
@@ -59,6 +55,17 @@ public class TrainingAdapter extends ArrayAdapter<Training> {
         return convertView;
     }
 
-    private void setupViewHolder(View convertView, ViewGroup parent) {
+    private ViewHolder buildViewHolder(Training training, View convertView, ViewGroup parent) {
+
+        ViewHolder viewHolder = new ViewHolder();
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        convertView = inflater.inflate(R.layout.training_list_item, parent, false);
+        viewHolder.setId(training.getId());
+        viewHolder.setIdTextView((TextView) convertView.findViewById(R.id.training_id));
+        viewHolder.setStartDateTextView((TextView) convertView.findViewById(R.id.training_start_date));
+        viewHolder.setFinishDateTextView((TextView) convertView.findViewById(R.id.training_finish_date));
+        convertView.setTag(viewHolder);
+
+        return viewHolder;
     }
 }

@@ -11,7 +11,7 @@ public interface TrainingManager {
     public void startTraining();
     public void pauseTraining();
     public void resumeTraining();
-    public void finishTraining();
+    public void finishTraining(boolean saveTraining);
     public boolean isTrainingInProgress();
     public boolean isTrainingPaused();
     public void setTrainingObserver(TrainingObserver trainingObserver);
