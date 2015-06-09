@@ -2,9 +2,9 @@ package put.iwm.android.motionrecorder.fragments;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +18,10 @@ import javax.inject.Inject;
 
 import put.iwm.android.motionrecorder.R;
 import put.iwm.android.motionrecorder.application.MotionRecorderApplication;
-import put.iwm.android.motionrecorder.contracts.TimerObserver;
-import put.iwm.android.motionrecorder.training.TrainingManager;
-import put.iwm.android.motionrecorder.contracts.TrainingObserver;
-import put.iwm.android.motionrecorder.training.TrainingTimer;
+import put.iwm.android.motionrecorder.presenters.ActiveTrainingPresenter;
+import put.iwm.android.motionrecorder.views.ActiveTrainingView;
 
-public class ActiveTrainingFragment extends Fragment implements TimerObserver, TrainingObserver, ConfirmDialogFragment.NoticeDialogListener {
+public class ActiveTrainingFragment extends Fragment implements ActiveTrainingView, ConfirmDialogFragment.NoticeDialogListener {
 
     private static final String TAG = ActiveTrainingFragment.class.toString();
     private View rootView;
@@ -35,35 +33,33 @@ public class ActiveTrainingFragment extends Fragment implements TimerObserver, T
     private Button resumeTrainingButton;
     private Button pauseTrainingButton;
     private ConfirmDialogFragment confirmDialog;
-
-    @Inject TextGenerator textGenerator;
-    @Inject TrainingManager trainingManager;
-    @Inject TrainingTimer trainingTimer;
+    @Inject ActiveTrainingPresenter activeTrainingPresenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         MotionRecorderApplication.getApplicationComponent().inject(this);
+        activeTrainingPresenter.setView(this);
 
         rootView = inflater.inflate(R.layout.fragment_active_training, container, false);
-
-        trainingTimer.setTimerObserver(this);
-        trainingManager.setTrainingObserver(this);
 
         setupUIReferences();
         setupEventHandlers();
         updateUI();
-
-        trainingManager.requestTrainingUpdate();
 
         return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        activeTrainingPresenter.onResume();
     }
 
     private void setupUIReferences() {
@@ -114,7 +110,7 @@ public class ActiveTrainingFragment extends Fragment implements TimerObserver, T
 
     private void startTrainingButtonClicked() {
 
-        trainingManager.startTraining();
+        activeTrainingPresenter.startTraining();
         resetUIFields();
         updateUI();
     }
@@ -142,61 +138,50 @@ public class ActiveTrainingFragment extends Fragment implements TimerObserver, T
     }
 
     private void finishTraining(boolean saveTraining) {
-        trainingManager.finishTraining(saveTraining);
+        activeTrainingPresenter.finishTraining(saveTraining);
         updateUI();
     }
 
     private void resumeTrainingButtonClicked() {
-
-        trainingManager.resumeTraining();
+        activeTrainingPresenter.resumeTraining();
         updateUI();
     }
 
     private void pauseTrainingButtonClicked() {
-
-        trainingManager.pauseTraining();
+        activeTrainingPresenter.pauseTraining();
         updateUI();
     }
 
     private void updateUI() {
 
-        if(trainingManager.isTrainingInProgress()) {
+        int[] buttonsStates;
 
-            if(trainingManager.isTrainingPaused()) {
-                startTrainingButton.setVisibility(View.GONE);
-                finishTrainingButton.setVisibility(View.VISIBLE);
-                resumeTrainingButton.setVisibility(View.VISIBLE);
-                pauseTrainingButton.setVisibility(View.GONE);
-            } else {
-                startTrainingButton.setVisibility(View.GONE);
-                finishTrainingButton.setVisibility(View.VISIBLE);
-                resumeTrainingButton.setVisibility(View.GONE);
-                pauseTrainingButton.setVisibility(View.VISIBLE);
-            }
-        } else {
-            startTrainingButton.setVisibility(View.VISIBLE);
-            finishTrainingButton.setVisibility(View.GONE);
-            resumeTrainingButton.setVisibility(View.GONE);
-            pauseTrainingButton.setVisibility(View.GONE);
-        }
+        if(activeTrainingPresenter.isTrainingInProgress())
+            if (activeTrainingPresenter.isTrainingPaused())
+                buttonsStates = new int[] { View.GONE, View.VISIBLE, View.VISIBLE, View.GONE };
+            else
+                buttonsStates = new int[] { View.GONE, View.VISIBLE, View.GONE, View.VISIBLE };
+        else
+            buttonsStates = new int[] { View.VISIBLE, View.GONE, View.GONE, View.GONE };
+
+        startTrainingButton.setVisibility(buttonsStates[0]);
+        finishTrainingButton.setVisibility(buttonsStates[1]);
+        resumeTrainingButton.setVisibility(buttonsStates[2]);
+        pauseTrainingButton.setVisibility(buttonsStates[3]);
     }
 
     @Override
-    public void processTimerUpdate(long time) {
-
-        String timeText = textGenerator.createTimerText(time);
-        trainingTimerTextView.setText(timeText);
+    public void setTrainingTimerText(String time) {
+        trainingTimerTextView.setText(time);
     }
 
     @Override
-    public void processTrainingUpdate(Map<String, String> responseModel) {
+    public void setTrainingData(Map<String, Object> model) {
 
-        Log.i(TAG, responseModel.get("speed"));
-
-        String speedText = textGenerator.createSpeedText(Double.valueOf(responseModel.get("speed")));
+        String speedText = (String) model.get("speed");
         trainingSpeedTextView.setText(speedText);
 
-        String distanceText = textGenerator.createDistanceText(Double.valueOf(responseModel.get("distance")));
+        String distanceText = (String) model.get("distance");
         trainingDistanceTextView.setText(distanceText);
     }
 

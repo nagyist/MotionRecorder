@@ -106,12 +106,12 @@ public class TrainingManagerImpl implements TrainingManager, LocationObserver {
 
     private void updateTrainingObserver() {
 
-        Map<String, String> responseModel = new HashMap<>();
-        responseModel.put("distance", String.valueOf(currentTraining.getTotalDistance()));
-        responseModel.put("speed", String.valueOf(currentTraining.getCurrentSpeed()));
+        Map<String, Object> model = new HashMap<>();
+        model.put("distance", String.valueOf(currentTraining.getTotalDistance()));
+        model.put("speed", String.valueOf(currentTraining.getCurrentSpeed()));
 
         if(trainingObserver != null)
-            trainingObserver.processTrainingUpdate(responseModel);
+            trainingObserver.processTrainingUpdate(model);
     }
 
     private void updateRouteObserver() {

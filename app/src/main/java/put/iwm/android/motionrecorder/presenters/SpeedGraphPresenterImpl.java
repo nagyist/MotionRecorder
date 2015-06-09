@@ -1,6 +1,6 @@
 package put.iwm.android.motionrecorder.presenters;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import put.iwm.android.motionrecorder.interactors.OnGetTrainingSpeedDataFinishedListener;
 import put.iwm.android.motionrecorder.interactors.SpeedGraphInteractor;
@@ -25,7 +25,7 @@ public class SpeedGraphPresenterImpl implements SpeedGraphPresenter, OnGetTraini
     }
 
     @Override
-    public void onTrainingSpeedDataReady(HashMap<String, Object> model) {
+    public void onTrainingSpeedDataReady(Map<String, Object> model) {
         view.setTrainingSpeedData(model);
     }
 }

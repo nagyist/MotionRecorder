@@ -14,8 +14,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ValueFormatter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -59,7 +59,7 @@ public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
     }
 
     @Override
-    public void setTrainingSpeedData(HashMap<String, Object> model) {
+    public void setTrainingSpeedData(Map<String, Object> model) {
         List<SpeedPoint> speedPoints = (List<SpeedPoint>) model.get("speedPoints");
         double maxSpeed = (double) model.get("maxSpeed");
         double avgSpeed = (double) model.get("avgSpeed");

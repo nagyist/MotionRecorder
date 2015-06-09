@@ -5,6 +5,7 @@ import put.iwm.android.motionrecorder.activities.RegisterActivity;
 import put.iwm.android.motionrecorder.activities.RouteMapActivity;
 import put.iwm.android.motionrecorder.activities.SpeedGraphActivity;
 import put.iwm.android.motionrecorder.activities.TrainingStatsActivity;
+import put.iwm.android.motionrecorder.fragments.ActiveTrainingFragment;
 
 /**
  * Created by Szymon on 2015-05-09.

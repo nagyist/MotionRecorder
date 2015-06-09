@@ -3,6 +3,7 @@ package put.iwm.android.motionrecorder.interactors;
 import android.os.Handler;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import put.iwm.android.motionrecorder.database.repository.TrainingRepository;
 import put.iwm.android.motionrecorder.training.Training;
@@ -34,7 +35,7 @@ public class SpeedGraphInteractorImpl implements SpeedGraphInteractor {
 
         training = trainingRepository.findById(trainingId);
 
-        HashMap<String, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         model.put("speedPoints", training.getSpeedPointsForGraph());
         model.put("maxSpeed", training.getMaxSpeed());
         model.put("avgSpeed", training.getAvgSpeed());

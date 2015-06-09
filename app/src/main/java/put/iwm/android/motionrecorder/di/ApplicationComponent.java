@@ -9,7 +9,7 @@ import put.iwm.android.motionrecorder.application.MotionRecorderApplication;
  * Created by Szymon on 2015-05-06.
  */
 @Singleton
-@Component(modules = {TextGeneratorModule.class, TrainingManagerModule.class, ApplicationModule.class})
+@Component(modules = {ActiveTrainingPresenterModule.class, TextGeneratorModule.class, TrainingManagerModule.class, ApplicationModule.class})
 public interface ApplicationComponent extends ApplicationDependencyGraph {
 
     static final class Initializer {

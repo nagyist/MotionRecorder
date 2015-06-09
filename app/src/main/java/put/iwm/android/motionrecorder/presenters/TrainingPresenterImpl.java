@@ -2,6 +2,7 @@ package put.iwm.android.motionrecorder.presenters;
 
 import java.sql.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import put.iwm.android.motionrecorder.fragments.TextGenerator;
 import put.iwm.android.motionrecorder.interactors.OnDeleteTrainingFinishedListener;
@@ -35,9 +36,9 @@ public class TrainingPresenterImpl implements TrainingPresenter, OnGetTrainingSt
     }
 
     @Override
-    public void onTrainingStatsDataReady(HashMap<String, Object> model) {
+    public void onTrainingStatsDataReady(Map<String, Object> model) {
 
-        HashMap<String, String> viewModel = new HashMap<>();
+        Map<String, String> viewModel = new HashMap<>();
         viewModel.put("startDate", textGenerator.createDateText((Date)model.get("startDate")));
         viewModel.put("finishDate", textGenerator.createDateText((Date)model.get("finishDate")));
         viewModel.put("duration", textGenerator.createTimerText((long) model.get("duration")));

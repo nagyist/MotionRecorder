@@ -3,6 +3,7 @@ package put.iwm.android.motionrecorder.interactors;
 import android.os.Handler;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import put.iwm.android.motionrecorder.database.repository.TrainingRepository;
 import put.iwm.android.motionrecorder.training.Training;
@@ -33,7 +34,7 @@ public class TrainingInteractorImpl implements TrainingInteractor {
 
         training = trainingRepository.findById(trainingId);
 
-        HashMap<String, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         model.put("startDate", training.getStartDate());
         model.put("finishDate", training.getFinishDate());
         model.put("duration", training.getDurationTime());

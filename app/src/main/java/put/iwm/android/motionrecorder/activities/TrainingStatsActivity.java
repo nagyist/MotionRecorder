@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -58,7 +58,7 @@ public class TrainingStatsActivity extends BaseActivity implements TrainingStats
     }
 
     @Override
-    public void setTrainingStatsData(HashMap<String, String> model) {
+    public void setTrainingStatsData(Map<String, String> model) {
 
         startDateTextView.setText(model.get("startDate"));
         finishDateTextView.setText(model.get("finishDate"));
