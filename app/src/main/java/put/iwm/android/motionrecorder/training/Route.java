@@ -150,11 +150,10 @@ public class Route {
 
     public double getAvgSpeed() {
 
-        if(speedMeasurementPoints.size() > 0) {
+        if(speedMeasurementPoints.size() > 0)
             return calculateAvgSpeed();
-        } else {
+        else
             return 0;
-        }
     }
 
     private double calculateAvgSpeed() {

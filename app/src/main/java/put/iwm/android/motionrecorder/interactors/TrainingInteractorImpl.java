@@ -58,5 +58,4 @@ public class TrainingInteractorImpl implements TrainingInteractor {
         trainingRepository.deleteById(trainingId);
         listener.onDeleteTrainingSuccess();
     }
-
 }
