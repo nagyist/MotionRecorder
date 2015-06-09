@@ -35,7 +35,7 @@ public class SpeedGraphInteractorImpl implements SpeedGraphInteractor {
         training = trainingRepository.findById(trainingId);
 
         HashMap<String, Object> model = new HashMap<>();
-        model.put("speedPoints", training.getSpeedPoints());
+        model.put("speedPoints", training.getSpeedPointsForGraph());
         model.put("maxSpeed", training.getMaxSpeed());
         model.put("avgSpeed", training.getAvgSpeed());
 

@@ -28,7 +28,7 @@ import put.iwm.android.motionrecorder.training.TrainingTimer;
 public class LocationListenerService extends Service implements LocationListener, GoogleApiClient.ConnectionCallbacks {
 
     private static final String TAG = LocationListenerService.class.toString();
-    private static final long updateTime = 1000;
+    private static final long updateTime = 2000;
     private static final float updateDistance = 0;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
@@ -71,9 +71,9 @@ public class LocationListenerService extends Service implements LocationListener
     private void createLocationRequest() {
 
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(updateTime  + 4000);
+        locationRequest.setInterval(updateTime);
         locationRequest.setFastestInterval(updateTime);
-        locationRequest.setSmallestDisplacement(updateDistance);
+        //locationRequest.setSmallestDisplacement(updateDistance);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -116,6 +116,7 @@ public class LocationListenerService extends Service implements LocationListener
 
         super.onDestroy();
         LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+        googleApiClient.disconnect();
         stopSelf();
 
         Log.i(TAG, "onDestroy!");

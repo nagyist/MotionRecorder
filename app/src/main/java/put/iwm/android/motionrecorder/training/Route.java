@@ -2,6 +2,7 @@ package put.iwm.android.motionrecorder.training;
 
 import android.location.Location;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class Route {
 
     public Route() {
         routePoints = new LinkedList<>();
-        speedMeasurementPoints = new LinkedList<>();
+        speedMeasurementPoints = new ArrayList<>();
     }
 
     public Route(RouteEntity routeEntity) {
@@ -133,9 +134,11 @@ public class Route {
 
         double maxSpeed = 0;
 
-        for(SpeedPoint point : speedMeasurementPoints)
-            if(isGreater(point.getValue(), maxSpeed))
-                maxSpeed = point.getValue();
+        for(int i = 0; i < speedMeasurementPoints.size(); i++) {
+            double speed = calculatePartialAvgSpeedInWindow(i, 4);
+            if(isGreater(speed, maxSpeed))
+                maxSpeed = speed;
+        }
 
         return maxSpeed;
     }
@@ -161,23 +164,70 @@ public class Route {
         double avgSpeed = 0;
         double numerator = 0;
         double denominator = 0;
-        int i = 0;
 
-        for(SpeedPoint point : speedMeasurementPoints) {
+        for(int i = 0; i < speedMeasurementPoints.size(); i++) {
 
-            if(isNotInfinity(point.getValue())) {
+            if(isNotInfinity(speedMeasurementPoints.get(i).getValue())) {
                 long partialMoveTime = routePoints.get(i + 1).getMoveTime() - routePoints.get(i).getMoveTime();
-                numerator += point.getValue() * partialMoveTime;
+                numerator += calculatePartialAvgSpeedInWindow(i, 4) * partialMoveTime;
                 denominator += partialMoveTime;
             }
-
-            i++;
         }
 
         if(denominator > 0)
             avgSpeed = numerator / denominator;
 
         return avgSpeed;
+    }
+
+    private double calculatePartialAvgSpeedInWindow(int index, int windowSize) {
+
+        int startIndex = index - windowSize;
+        startIndex = startIndex >= 0 ? startIndex : 0;
+
+        int endIndex = index + windowSize;
+        endIndex = endIndex < speedMeasurementPoints.size() ? endIndex : speedMeasurementPoints.size() - 1;
+
+        double partialAvgSpeed = 0;
+        double numerator = 0;
+        double denominator = 0;
+
+        double pointWeight = 1;
+
+        for(int i = startIndex; i <= endIndex; i++) {
+
+            SpeedPoint point = speedMeasurementPoints.get(i);
+
+            if(isNotInfinity(point.getValue())) {
+                numerator += point.getValue() * Math.pow(pointWeight, 2);
+                denominator += Math.pow(pointWeight, 2);
+            }
+
+            if(i < index)
+                pointWeight++;
+            else
+                pointWeight--;
+        }
+
+        if(denominator > 0)
+            partialAvgSpeed = numerator / denominator;
+
+        return partialAvgSpeed;
+    }
+
+    public List<SpeedPoint> getSpeedMeasurementPointsForGraph() {
+
+        List<SpeedPoint> points = new ArrayList<>();
+
+        for(int i = 0; i < speedMeasurementPoints.size(); i++) {
+
+            double value = calculatePartialAvgSpeedInWindow(i, 4);
+            SpeedPoint point = new SpeedPoint(value, i + 1);
+
+            points.add(point);
+        }
+
+        return points;
     }
 
     public long getId() {

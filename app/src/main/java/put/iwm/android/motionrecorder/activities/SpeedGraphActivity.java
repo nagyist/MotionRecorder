@@ -77,6 +77,7 @@ public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
         speedGraph.setScaleEnabled(true);
         speedGraph.setPinchZoom(true);
         speedGraph.setHighlightIndicatorEnabled(false);
+        speedGraph.getLegend().setEnabled(false);
 
         YAxis leftAxis = speedGraph.getAxisLeft();
         leftAxis.removeAllLimitLines();
@@ -111,8 +112,8 @@ public class SpeedGraphActivity extends BaseActivity implements SpeedGraphView {
             bottomLimit.setTextSize(10);
 
             LimitLine avgLimit = new LimitLine(avgSpeed);
-            avgLimit.setLineWidth(1);
-            avgLimit.setTextSize(10);
+            avgLimit.setLineWidth(2);
+            avgLimit.enableDashedLine(10, 10, 0);
             avgLimit.setLabelPosition(LimitLine.LimitLabelPosition.POS_LEFT);
             avgLimit.setLineColor(Color.DKGRAY);
 

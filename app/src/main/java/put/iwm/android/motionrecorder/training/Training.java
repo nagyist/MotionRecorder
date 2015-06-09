@@ -135,4 +135,9 @@ public class Training {
     public List<SpeedPoint> getSpeedPoints() {
         return route.getSpeedMeasurementPoints();
     }
+
+    public List<SpeedPoint> getSpeedPointsForGraph() {
+        return route.getSpeedMeasurementPointsForGraph();
+    }
+
 }
