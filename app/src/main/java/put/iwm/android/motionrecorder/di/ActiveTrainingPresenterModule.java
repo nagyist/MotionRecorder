@@ -18,10 +18,9 @@ import put.iwm.android.motionrecorder.views.ActiveTrainingView;
 public class ActiveTrainingPresenterModule {
 
     @Provides
-    @PerActivity
+    @Singleton
     public ActiveTrainingPresenter provideActiveTrainingPresenter(TextGenerator textGenerator,
                                                                   TrainingManager trainingManager, TrainingTimer trainingTimer) {
         return new ActiveTrainingPresenterImpl(textGenerator, trainingManager, trainingTimer);
     }
-
 }

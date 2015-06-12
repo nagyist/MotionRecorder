@@ -188,31 +188,49 @@ public class Route {
         int endIndex = index + windowSize;
         endIndex = endIndex < speedMeasurementPoints.size() ? endIndex : speedMeasurementPoints.size() - 1;
 
-        double partialAvgSpeed = 0;
-        double numerator = 0;
-        double denominator = 0;
+        return calculatePartialAvgSpeedBetweenIndices(startIndex, index, endIndex);
+    }
 
-        double pointWeight = 1;
+    private double calculatePartialAvgSpeedBetweenIndices(int startIndex, int midIndex, int endIndex) {
 
-        for(int i = startIndex; i <= endIndex; i++) {
+        double result = 0, numerator = 0, denominator = 0, pointWeight;
+        double[] weights = calculateWeights(startIndex, endIndex);
+
+        for(int i = startIndex, j = 0; i <= endIndex; i++, j++) {
 
             SpeedPoint point = speedMeasurementPoints.get(i);
 
             if(isNotInfinity(point.getValue())) {
-                numerator += point.getValue() * Math.pow(pointWeight, 2);
-                denominator += Math.pow(pointWeight, 2);
+                pointWeight = weights[j] * weights[j];
+                numerator += point.getValue() * pointWeight;
+                denominator += pointWeight;
             }
-
-            if(i < index)
-                pointWeight++;
-            else
-                pointWeight--;
         }
 
         if(denominator > 0)
-            partialAvgSpeed = numerator / denominator;
+            result = numerator / denominator;
 
-        return partialAvgSpeed;
+        return result;
+    }
+
+    private double[] calculateWeights(int startIndex, int endIndex) {
+
+        int size = endIndex - startIndex + 1;
+        int midIndex = size / 2;
+        double[] weights = new double[size];
+        double weight = 0;
+
+        for(int i = 0; i < size; i++) {
+
+            if(i <= midIndex)
+                weight++;
+            else
+                weight--;
+
+            weights[i] = weight;
+        }
+
+        return weights;
     }
 
     public List<SpeedPoint> getSpeedMeasurementPointsForGraph() {
